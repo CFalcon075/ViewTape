@@ -1,0 +1,47 @@
+<%- include('partials/header') %>
+
+<div class="vt-playlists-page">
+  <h2>My Playlists</h2>
+
+  <div class="vt-playlist-create">
+    <h3>Create New Playlist</h3>
+    <form method="POST" action="/playlists/create" class="vt-playlist-create-form">
+      <input type="text" name="name" placeholder="Playlist name..." required class="vt-playlist-name-input">
+      <input type="text" name="description" placeholder="Description (optional)" class="vt-playlist-desc-input">
+      <button type="submit" class="vt-playlist-create-btn">Create Playlist</button>
+    </form>
+  </div>
+
+  <% if (playlists.length === 0) { %>
+    <div class="vt-empty-playlists">
+      <p>You have no playlists yet. Create one above or add videos to your QuickList!</p>
+    </div>
+  <% } else { %>
+    <div class="vt-playlists-list">
+      <% playlists.forEach(function(pl) { %>
+        <div class="vt-playlist-item">
+          <div class="vt-playlist-item-info">
+            <a href="/playlist/<%= pl.id %>" class="vt-playlist-item-name">
+              <% if (pl.is_quicklist) { %>&#9889; <% } %><%= pl.name %>
+            </a>
+            <span class="vt-playlist-item-meta"><%= pl.video_count %> video<%= pl.video_count !== 1 ? 's' : '' %></span>
+            <% if (pl.description) { %>
+              <span class="vt-playlist-item-desc"><%= pl.description %></span>
+            <% } %>
+          </div>
+          <div class="vt-playlist-item-actions">
+            <a href="/playlist/<%= pl.id %>" class="vt-playlist-view-btn">View</a>
+            <% if (!pl.is_quicklist) { %>
+              <form method="POST" action="/playlists/delete" style="display:inline;">
+                <input type="hidden" name="playlist_id" value="<%= pl.id %>">
+                <button type="submit" class="vt-playlist-delete-btn" onclick="return confirm('Delete this playlist?')">Delete</button>
+              </form>
+            <% } %>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

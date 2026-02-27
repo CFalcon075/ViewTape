@@ -1,0 +1,2345 @@
+/* ========================================
+   ViewTape - 2007 YouTube Style CSS
+   ======================================== */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #fff;
+  color: #000;
+  font-size: 12px;
+}
+
+a { color: #03c; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* ========================================
+   HEADER
+   ======================================== */
+.vt-header-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 10px 8px 0;
+}
+
+.vt-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.vt-logo-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vt-logo {
+  height: 50px;
+  width: auto;
+}
+
+.vt-tagline {
+  font-size: 12px;
+  color: #666;
+  font-style: italic;
+}
+
+.vt-header-links {
+  font-size: 12px;
+}
+
+.vt-header-links a {
+  color: #03c;
+  margin: 0 4px;
+}
+
+.vt-header-avatar {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 2px;
+  border-radius: 2px;
+}
+
+/* Tabs */
+.vt-tabs {
+  display: flex;
+  gap: 4px;
+  margin-top: 6px;
+  padding-left: 0;
+}
+
+.vt-tab {
+  display: inline-block;
+  width: 110px;
+  height: 26px;
+  line-height: 26px;
+  text-align: center;
+  border-radius: 4px 4px 0 0;
+  background: linear-gradient(to bottom, #eef4ff, #cfe0f6 55%, #bcd4f2);
+  color: #003c8a;
+  font-weight: bold;
+  font-size: 12px;
+  border: 1px solid #9bb6df;
+  border-bottom: none;
+  text-decoration: none;
+}
+
+.vt-tab:hover {
+  text-decoration: none;
+  background: linear-gradient(to bottom, #f5f8ff, #dde9f9 55%, #c8d9f4);
+}
+
+.vt-tab.selected {
+  background: linear-gradient(to bottom, #f9f9f9, #ececec 58%, #dcdcdc);
+  border-color: #bcbcbc;
+  color: #1a2a5a;
+}
+
+/* Search bar */
+.vt-searchbar {
+  background: linear-gradient(to bottom, #d0d0d0, #e8e8e8 40%, #d0d0d0);
+  border: 1px solid #b0b0b0;
+  border-radius: 0 0 6px 6px;
+  padding: 6px 12px;
+  margin-bottom: 10px;
+}
+
+.vt-search-inner {
+  display: flex;
+  gap: 8px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.vt-search-input {
+  flex: 1;
+  height: 26px;
+  border: 1px solid #7a7a7a;
+  border-radius: 3px;
+  padding: 0 8px;
+  font-size: 13px;
+}
+
+.vt-search-input:focus { outline: none; border-color: #4a4a4a; }
+
+.vt-search-btn {
+  height: 28px;
+  padding: 0 14px;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000;
+  background: linear-gradient(to bottom, #f4f4f4, #e0e0e0);
+  border: 1px solid #a3a3a3;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.vt-search-btn:hover {
+  background: linear-gradient(to bottom, #fff, #e8e8e8);
+}
+
+/* ========================================
+   PAGE CONTAINER
+   ======================================== */
+.vt-page {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 8px 20px;
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+.vt-footer {
+  max-width: 960px;
+  margin: 20px auto 0;
+  padding: 12px 8px;
+  border-top: 1px solid #ccc;
+  text-align: center;
+  font-size: 11px;
+  color: #666;
+}
+
+.vt-footer a { color: #03c; margin: 0 6px; }
+
+/* ========================================
+   HOMEPAGE
+   ======================================== */
+.vt-section {
+  margin-bottom: 20px;
+}
+
+.vt-section-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  border-bottom: 2px solid #c00;
+  padding-bottom: 4px;
+  margin: 16px 0 10px;
+}
+
+.vt-empty-home {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.vt-empty-home h2 { font-size: 22px; color: #333; }
+.vt-empty-home p { font-size: 14px; color: #666; margin: 10px 0 20px; }
+
+.vt-btn-upload {
+  display: inline-block;
+  padding: 8px 20px;
+  background: linear-gradient(to bottom, #7fd42e, #5cbf00 55%, #4aa600);
+  color: #fff;
+  border: 1px solid #3d8c00;
+  border-radius: 4px;
+  font-weight: bold;
+  text-decoration: none;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+.vt-btn-upload:hover {
+  text-decoration: none;
+  background: linear-gradient(to bottom, #96e34a, #6ecf10 55%, #5ab810);
+}
+
+/* Video Grid */
+.vt-video-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+.vt-video-thumb {
+  background: #fff;
+}
+
+.vt-thumb-img-wrap {
+  position: relative;
+  width: 100%;
+  padding-top: 75%;
+  background: #000;
+  overflow: hidden;
+  border: 1px solid #ccc;
+}
+
+.vt-thumb-img-wrap img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vt-thumb-placeholder {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #333 0%, #555 100%);
+}
+
+.vt-thumb-duration {
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  padding: 1px 4px;
+  font-size: 10px;
+  border-radius: 2px;
+}
+
+.vt-thumb-info {
+  padding: 4px 0;
+}
+
+.vt-thumb-title {
+  display: block;
+  font-size: 12px;
+  font-weight: bold;
+  color: #03c;
+  line-height: 1.3;
+  max-height: 2.6em;
+  overflow: hidden;
+  margin-bottom: 2px;
+}
+
+.vt-thumb-meta {
+  font-size: 11px;
+  color: #666;
+}
+
+.vt-thumb-author {
+  color: #666;
+}
+
+.vt-thumb-views {
+  display: block;
+  color: #999;
+  font-size: 10px;
+}
+
+.vt-thumb-stars {
+  color: #f90;
+  font-size: 10px;
+}
+
+/* ========================================
+   WATCH PAGE
+   ======================================== */
+.watch-layout {
+  display: grid;
+  grid-template-columns: 425px 300px;
+  column-gap: 18px;
+  row-gap: 14px;
+  align-items: start;
+  max-width: 980px;
+  margin: 10px auto 24px;
+  padding: 0 16px;
+}
+
+.watch-left {
+  min-width: 0;
+}
+
+.watch-right {
+  min-width: 0;
+}
+
+.watch-title-left {
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0 0 6px;
+  color: #333;
+}
+
+/* ========================================
+   VIDEO PLAYER — all styles in player.css
+   ======================================== */
+
+/* ========================================
+   ACTIONS & STATS (BELOW PLAYER)
+   ======================================== */
+.vt-actions-stats {
+  border: 1px solid #c3c3c3;
+  background: #fff;
+  margin-top: 8px;
+  width: 425px;
+}
+
+.vt-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.vt-rating-block {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.vt-stars-row {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+}
+
+.vt-star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  color: #ccc;
+  padding: 0 1px;
+  line-height: 1;
+}
+
+.vt-star-btn:hover, .vt-star-btn.active {
+  color: #f90;
+}
+
+.vt-star-display {
+  font-size: 18px;
+  color: #f90;
+}
+
+.vt-rating-count {
+  font-size: 11px;
+  color: #666;
+}
+
+.vt-thumbs-block {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vt-thumb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 3px 8px;
+  cursor: pointer;
+  font-size: 11px;
+  color: #333;
+}
+
+.vt-thumb-btn:hover {
+  background: #f0f0f0;
+}
+
+.vt-thumb-btn.active {
+  background: #e8f0fe;
+  border-color: #4a86c8;
+}
+
+.vt-thumb-btn.disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.vt-thumb-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.vt-stats-row {
+  padding: 6px 10px;
+  text-align: center;
+  font-size: 12px;
+  color: #333;
+}
+
+.vt-stat-divider {
+  color: #999;
+  margin: 0 8px;
+}
+
+/* ========================================
+   COMMENTS
+   ======================================== */
+.vt-comments-section {
+  margin-top: 16px;
+  width: 425px;
+}
+
+.vt-comments-section h3 {
+  font-size: 14px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+}
+
+.vt-comment-form {
+  margin-bottom: 16px;
+}
+
+.vt-comment-form textarea {
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 6px;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  resize: vertical;
+}
+
+.vt-comment-submit {
+  margin-top: 4px;
+  padding: 4px 14px;
+  background: linear-gradient(to bottom, #f4f4f4, #e0e0e0);
+  border: 1px solid #a3a3a3;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.vt-comment-submit:hover {
+  background: linear-gradient(to bottom, #fff, #e8e8e8);
+}
+
+.vt-login-prompt {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.vt-comment {
+  border-bottom: 1px solid #e8e8e8;
+  padding: 8px 0;
+}
+
+.vt-comment-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.vt-comment-avatar {
+  width: 24px;
+  height: 24px;
+  border-radius: 2px;
+}
+
+.vt-comment-author {
+  font-weight: bold;
+  color: #03c;
+  font-size: 12px;
+}
+
+.vt-comment-date {
+  font-size: 10px;
+  color: #999;
+}
+
+.vt-comment-delete {
+  background: none;
+  border: none;
+  color: #c00;
+  cursor: pointer;
+  font-size: 12px;
+  margin-left: auto;
+}
+
+.vt-comment-text {
+  font-size: 12px;
+  line-height: 1.4;
+  color: #333;
+  white-space: pre-wrap;
+}
+
+/* ========================================
+   SIDE PANEL (WATCH PAGE RIGHT)
+   ======================================== */
+.vt-side-panel {
+  border: 1px solid #c3c3c3;
+  background: #fff;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.vt-side-top {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.vt-side-labels {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vt-side-row {
+  margin: 4px 0;
+}
+
+.vt-side-label {
+  font-weight: bold;
+  color: #333;
+  margin-right: 4px;
+}
+
+.vt-side-desc {
+  margin: 8px 0;
+  line-height: 1.4;
+  color: #333;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 6px;
+  white-space: pre-wrap;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.vt-side-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.vt-tag {
+  background: #eee;
+  border: 1px solid #ddd;
+  padding: 1px 5px;
+  border-radius: 2px;
+  font-size: 11px;
+  color: #03c;
+}
+
+.vt-tag:hover {
+  text-decoration: none;
+  background: #e0e0e0;
+}
+
+.vt-delete-form {
+  margin-top: 10px;
+}
+
+.vt-delete-btn {
+  background: #c00;
+  color: #fff;
+  border: 1px solid #900;
+  border-radius: 3px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 11px;
+}
+
+.vt-delete-btn:hover {
+  background: #e00;
+}
+
+/* Related Videos */
+.vt-related {
+  margin-top: 14px;
+}
+
+.vt-related h3 {
+  font-size: 13px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+.vt-related-item {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.vt-related-thumb {
+  flex-shrink: 0;
+  width: 120px;
+  height: 90px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  background: #000;
+}
+
+.vt-related-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.vt-thumb-placeholder-sm {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #333, #555);
+}
+
+.vt-related-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vt-related-title {
+  font-size: 11px;
+  font-weight: bold;
+  color: #03c;
+  line-height: 1.3;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.vt-related-meta {
+  font-size: 10px;
+  color: #666;
+}
+
+/* ========================================
+   FORMS (Auth, Upload)
+   ======================================== */
+.vt-form-page {
+  max-width: 400px;
+  margin: 30px auto;
+  padding: 20px;
+  border: 1px solid #ccc;
+  background: #fafafa;
+  border-radius: 4px;
+}
+
+.vt-form-page h2 {
+  font-size: 18px;
+  margin: 0 0 16px;
+  color: #333;
+  border-bottom: 2px solid #c00;
+  padding-bottom: 6px;
+}
+
+.vt-error {
+  background: #ffeaea;
+  border: 1px solid #f5c6cb;
+  color: #c00;
+  padding: 8px;
+  border-radius: 3px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+.vt-form-group {
+  margin-bottom: 12px;
+}
+
+.vt-form-group label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 4px;
+  font-size: 12px;
+  color: #333;
+}
+
+.vt-form-group .required {
+  color: #c00;
+}
+
+.vt-form-group .hint {
+  font-size: 10px;
+  color: #999;
+  font-weight: normal;
+}
+
+.vt-form-group input[type="text"],
+.vt-form-group input[type="password"],
+.vt-form-group input[type="file"],
+.vt-form-group textarea,
+.vt-form-group select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #bbb;
+  border-radius: 3px;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+}
+
+.vt-form-group textarea {
+  resize: vertical;
+}
+
+.vt-form-group select {
+  background: #fff;
+}
+
+.vt-submit-btn {
+  display: block;
+  width: 100%;
+  padding: 8px;
+  background: linear-gradient(to bottom, #ff9e27, #ff7f00 55%, #e36e00);
+  color: #fff;
+  border: 1px solid #ce6a00;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+.vt-submit-btn:hover {
+  background: linear-gradient(to bottom, #ffb347, #ff9020 55%, #e87e10);
+}
+
+.vt-form-footer {
+  text-align: center;
+  margin-top: 12px;
+  font-size: 12px;
+}
+
+.vt-form-page.vt-upload-page {
+  max-width: 560px;
+}
+
+/* ========================================
+   CHANNEL PAGE
+   ======================================== */
+.vt-channel-page {
+  padding-top: 10px;
+}
+
+.vt-channel-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid #ccc;
+  background: linear-gradient(to bottom, #f9f9f9, #ececec);
+  border-radius: 4px;
+  margin-bottom: 16px;
+}
+
+.vt-channel-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.vt-channel-info h2 {
+  margin: 0 0 4px;
+  font-size: 18px;
+  color: #333;
+}
+
+.vt-channel-joined, .vt-channel-count {
+  display: block;
+  font-size: 11px;
+  color: #666;
+}
+
+.vt-settings-link {
+  display: inline-block;
+  margin-top: 4px;
+  padding: 3px 10px;
+  background: linear-gradient(to bottom, #f4f4f4, #e0e0e0);
+  border: 1px solid #a3a3a3;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+}
+
+.vt-settings-link:hover {
+  text-decoration: none;
+  background: linear-gradient(to bottom, #fff, #e8e8e8);
+}
+
+/* Channel Banner */
+.vt-channel-banner {
+  width: 100%;
+  max-height: 200px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 4px 4px 0 0;
+  margin-bottom: 0;
+}
+
+.vt-channel-banner img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+.vt-channel-page .vt-channel-banner + .vt-channel-header {
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+}
+
+/* Channel Bio */
+.vt-channel-bio {
+  border: 1px solid #ccc;
+  background: #fafafa;
+  padding: 10px 14px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.vt-channel-bio h3 {
+  font-size: 13px;
+  margin: 0 0 6px;
+  color: #333;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 4px;
+}
+
+.vt-channel-bio p {
+  margin: 0;
+  color: #444;
+  white-space: pre-wrap;
+}
+
+.vt-empty-channel {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+}
+
+/* ========================================
+   SNOW ANIMATION
+   ======================================== */
+.vt-snow-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 99999;
+  overflow: hidden;
+}
+
+.vt-snowflake {
+  position: absolute;
+  top: -10px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(255,255,255,0.8), 0 0 8px rgba(200,220,255,0.4);
+  animation: vt-snow-fall linear infinite;
+  pointer-events: none;
+}
+
+@keyframes vt-snow-fall {
+  0% {
+    transform: translateY(-10px) translateX(0px);
+    opacity: 1;
+  }
+  20% {
+    transform: translateY(20vh) translateX(8px);
+    opacity: 1;
+  }
+  40% {
+    transform: translateY(40vh) translateX(-5px);
+    opacity: 1;
+  }
+  60% {
+    transform: translateY(60vh) translateX(10px);
+    opacity: 1;
+  }
+  80% {
+    transform: translateY(80vh) translateX(-3px);
+    opacity: 1;
+  }
+  88% {
+    transform: translateY(calc(100vh - 10px)) translateX(0px);
+    opacity: 1;
+  }
+  94% {
+    transform: translateY(calc(100vh - 10px)) translateX(0px);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(calc(100vh - 10px)) translateX(0px);
+    opacity: 0;
+  }
+}
+
+/* ========================================
+   CHANNEL SETTINGS PAGE
+   ======================================== */
+.vt-settings-page {
+  max-width: 560px;
+}
+
+.vt-settings-section {
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.vt-settings-section h3 {
+  font-size: 13px;
+  color: #333;
+  margin: 0 0 8px;
+}
+
+.vt-avatar-preview-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.vt-avatar-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  object-fit: cover;
+}
+
+.vt-avatar-controls {
+  flex: 1;
+}
+
+.vt-banner-preview-wrap {
+  width: 100%;
+  max-height: 120px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.vt-banner-preview {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  display: block;
+}
+
+.vt-banner-placeholder-preview {
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(135deg, #ddd, #bbb);
+  border: 1px dashed #aaa;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 12px;
+}
+
+.vt-reset-btn {
+  display: inline-block;
+  padding: 3px 10px;
+  background: linear-gradient(to bottom, #f4f4f4, #e0e0e0);
+  border: 1px solid #a3a3a3;
+  border-radius: 3px;
+  font-size: 11px;
+  color: #666;
+  cursor: pointer;
+}
+
+.vt-reset-btn:hover {
+  background: linear-gradient(to bottom, #fff, #eee);
+}
+
+.vt-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.vt-checkbox-label {
+  font-weight: normal !important;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vt-checkbox-label input[type="checkbox"] {
+  width: auto;
+  margin: 0;
+}
+
+.vt-success {
+  background: #e6f9e6;
+  border: 1px solid #a3d9a3;
+  color: #2a7a2a;
+  padding: 8px;
+  border-radius: 3px;
+  margin-bottom: 12px;
+  font-size: 12px;
+}
+
+/* ========================================
+   CATEGORIES PAGE
+   ======================================== */
+.vt-categories-page h2 {
+  font-size: 18px;
+  border-bottom: 2px solid #c00;
+  padding-bottom: 6px;
+  margin: 10px 0 16px;
+}
+
+.vt-categories-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.vt-category-card {
+  display: block;
+  padding: 14px;
+  background: linear-gradient(to bottom, #eef4ff, #cfe0f6);
+  border: 1px solid #9bb6df;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 13px;
+  color: #003c8a;
+  text-decoration: none;
+}
+
+.vt-category-card:hover {
+  text-decoration: none;
+  background: linear-gradient(to bottom, #f5f8ff, #dde9f9);
+}
+
+/* ========================================
+   SEARCH / CATEGORY PAGE
+   ======================================== */
+.vt-search-page h2, .vt-category-page h2 {
+  font-size: 16px;
+  border-bottom: 2px solid #c00;
+  padding-bottom: 4px;
+  margin: 10px 0 14px;
+}
+
+.vt-no-results {
+  text-align: center;
+  padding: 30px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* ========================================
+   404 PAGE
+   ======================================== */
+.vt-404-page {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.vt-404-page h2 { font-size: 24px; color: #c00; }
+.vt-404-page p { font-size: 14px; color: #666; margin: 10px 0 20px; }
+
+/* ========================================
+   SUBSCRIBE BUTTON (Old YouTube gold/red)
+   ======================================== */
+.vt-sub-form {
+  display: inline;
+  margin: 0;
+}
+
+.vt-subscribe-btn {
+  display: inline-block;
+  padding: 4px 14px;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #b0960f;
+  border-radius: 3px;
+  cursor: pointer;
+  text-decoration: none;
+  background: linear-gradient(to bottom, #f9e47b, #e6c323);
+  color: #333;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+}
+
+.vt-subscribe-btn:hover {
+  background: linear-gradient(to bottom, #ffe97f, #f0cc28);
+  text-decoration: none;
+}
+
+.vt-subscribe-btn.subscribed {
+  background: linear-gradient(to bottom, #e04040, #c02020);
+  border-color: #a01010;
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.3);
+}
+
+.vt-subscribe-btn.subscribed:hover {
+  background: linear-gradient(to bottom, #ee4444, #d02020);
+}
+
+.vt-channel-subs {
+  font-size: 11px;
+  color: #666;
+}
+
+.vt-side-subs {
+  font-size: 11px;
+  color: #666;
+  margin-left: 4px;
+}
+
+/* ========================================
+   SUBSCRIPTIONS FEED PAGE
+   ======================================== */
+.vt-subs-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px 8px;
+}
+
+.vt-subs-page h2 {
+  font-size: 18px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.vt-subs-count {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 14px;
+}
+
+.vt-empty-subs {
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+  font-size: 13px;
+}
+
+.vt-sub-channels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.vt-sub-channel-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.vt-sub-channel-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+}
+
+.vt-sub-channel-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.vt-sub-channel-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #03c;
+}
+
+.vt-sub-channel-subs {
+  font-size: 11px;
+  color: #666;
+}
+
+/* ========================================
+   NOTIFICATIONS PAGE
+   ======================================== */
+.vt-notif-link {
+  position: relative;
+}
+
+.vt-notif-badge {
+  display: inline-block;
+  background: #c00;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 1px 5px;
+  border-radius: 8px;
+  margin-left: 3px;
+  vertical-align: top;
+  line-height: 14px;
+  min-width: 14px;
+  text-align: center;
+}
+
+.vt-notifs-page {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 10px 8px;
+}
+
+.vt-notifs-page h2 {
+  font-size: 18px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.vt-empty-notifs {
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+  font-size: 13px;
+}
+
+.vt-notifs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.vt-notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 8px;
+  border-bottom: 1px solid #e8e8e8;
+  background: #fff;
+}
+
+.vt-notif-item.unread {
+  background: #fffbe6;
+}
+
+.vt-notif-icon {
+  font-size: 18px;
+  flex-shrink: 0;
+  width: 24px;
+  text-align: center;
+}
+
+.vt-notif-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vt-notif-message {
+  font-size: 12px;
+  color: #333;
+}
+
+a.vt-notif-message:hover {
+  text-decoration: underline;
+  color: #03c;
+}
+
+.vt-notif-date {
+  font-size: 10px;
+  color: #999;
+}
+
+/* ========================================
+   CHANNELS PAGE
+   ======================================== */
+.vt-channels-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 10px 8px;
+}
+
+.vt-channels-page h2 {
+  font-size: 18px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.vt-channels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+.vt-channel-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  background: #fafafa;
+}
+
+.vt-channel-card:hover {
+  background: #f0f0f0;
+}
+
+.vt-channel-card-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  flex-shrink: 0;
+}
+
+.vt-channel-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.vt-channel-card-name {
+  font-size: 13px;
+  font-weight: bold;
+  color: #03c;
+}
+
+.vt-channel-card-meta {
+  font-size: 11px;
+  color: #666;
+}
+
+.vt-channel-card-bio {
+  font-size: 11px;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.vt-empty-channels {
+  text-align: center;
+  padding: 40px 0;
+  color: #666;
+  font-size: 13px;
+}
+
+.vt-search-section {
+  margin-bottom: 16px;
+}
+
+.vt-search-section-title {
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #e8e8e8;
+  padding-bottom: 4px;
+  margin-bottom: 8px;
+}
+
+/* ========================================
+   QUICKLIST ICON ON THUMBNAILS
+   ======================================== */
+.vt-thumb-img-wrap {
+  position: relative;
+}
+
+.vt-ql-icon {
+  position: absolute;
+  bottom: 4px;
+  left: 4px;
+  width: 20px;
+  height: 20px;
+  background: url('/icons/icn_add_20x20.gif') no-repeat center center;
+  background-size: contain;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 5;
+}
+
+.vt-thumb-img-wrap:hover .vt-ql-icon {
+  opacity: 1;
+}
+
+.vt-ql-icon:hover {
+  background-image: url('/icons/icn_add_over_20x20.gif');
+}
+
+.vt-ql-icon.added {
+  background-image: url('/icons/icn_add_over_20x20.gif');
+  opacity: 1;
+}
+
+/* ========================================
+   PLAYLIST ACTIONS ON WATCH PAGE
+   ======================================== */
+.vt-playlist-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #e8e8e8;
+}
+
+.vt-add-quicklist-btn {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: bold;
+  border: 1px solid #3a7a18;
+  border-radius: 3px;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #7cc748, #5aa828);
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+.vt-add-quicklist-btn:hover {
+  background: linear-gradient(to bottom, #8ed458, #66b830);
+}
+
+.vt-add-playlist-btn {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: bold;
+  border: 1px solid #3a7a18;
+  border-radius: 3px;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #7cc748, #5aa828);
+  color: #fff;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+.vt-add-playlist-btn:hover {
+  background: linear-gradient(to bottom, #8ed458, #66b830);
+}
+
+.vt-add-to-playlist-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.vt-playlist-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  z-index: 100;
+  min-width: 160px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.vt-playlist-dropdown.open {
+  display: block;
+}
+
+.vt-playlist-dropdown-item {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 12px;
+  text-align: left;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #333;
+}
+
+.vt-playlist-dropdown-item:hover {
+  background: #e8f4fd;
+  color: #03c;
+}
+
+/* ========================================
+   PLAYLISTS PAGE
+   ======================================== */
+.vt-playlists-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 10px 8px;
+}
+
+.vt-playlists-page h2 {
+  font-size: 18px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.vt-playlist-create {
+  background: #f9f9f9;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
+
+.vt-playlist-create h3 {
+  font-size: 13px;
+  margin: 0 0 8px 0;
+}
+
+.vt-playlist-create-form {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.vt-playlist-name-input,
+.vt-playlist-desc-input {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+.vt-playlist-name-input { width: 180px; }
+.vt-playlist-desc-input { width: 240px; }
+
+.vt-playlist-create-btn {
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: bold;
+  border: 1px solid #3a7a18;
+  border-radius: 3px;
+  cursor: pointer;
+  background: linear-gradient(to bottom, #7cc748, #5aa828);
+  color: #fff;
+}
+
+.vt-playlist-create-btn:hover {
+  background: linear-gradient(to bottom, #8ed458, #66b830);
+}
+
+.vt-empty-playlists {
+  text-align: center;
+  padding: 30px 0;
+  color: #666;
+  font-size: 13px;
+}
+
+.vt-playlists-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.vt-playlist-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 8px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.vt-playlist-item-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.vt-playlist-item-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #03c;
+}
+
+.vt-playlist-item-meta {
+  font-size: 11px;
+  color: #666;
+}
+
+.vt-playlist-item-desc {
+  font-size: 11px;
+  color: #888;
+}
+
+.vt-playlist-item-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.vt-playlist-view-btn {
+  padding: 3px 10px;
+  font-size: 11px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background: #f5f5f5;
+  color: #333;
+  text-decoration: none;
+}
+
+.vt-playlist-view-btn:hover {
+  background: #eee;
+  text-decoration: none;
+}
+
+.vt-playlist-delete-btn {
+  padding: 3px 10px;
+  font-size: 11px;
+  border: 1px solid #c00;
+  border-radius: 3px;
+  background: #fdd;
+  color: #c00;
+  cursor: pointer;
+}
+
+.vt-playlist-delete-btn:hover {
+  background: #fcc;
+}
+
+/* ========================================
+   PLAYLIST VIEW PAGE
+   ======================================== */
+.vt-playlist-page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 10px 8px;
+}
+
+.vt-playlist-header {
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+.vt-playlist-header h2 {
+  font-size: 18px;
+  margin-bottom: 2px;
+}
+
+.vt-playlist-by {
+  font-size: 12px;
+  color: #666;
+}
+
+.vt-playlist-desc {
+  font-size: 12px;
+  color: #555;
+  margin: 4px 0;
+}
+
+.vt-playlist-count {
+  font-size: 11px;
+  color: #999;
+}
+
+.vt-empty-playlist {
+  text-align: center;
+  padding: 30px 0;
+  color: #666;
+  font-size: 13px;
+}
+
+.vt-playlist-videos {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.vt-playlist-video-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.vt-playlist-video-num {
+  font-size: 14px;
+  font-weight: bold;
+  color: #999;
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.vt-playlist-video-thumb {
+  flex-shrink: 0;
+}
+
+.vt-playlist-video-thumb img {
+  width: 100px;
+  height: 75px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}
+
+.vt-playlist-video-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.vt-playlist-video-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: #03c;
+}
+
+.vt-playlist-video-meta {
+  font-size: 11px;
+  color: #666;
+}
+
+.vt-playlist-remove-form {
+  flex-shrink: 0;
+}
+
+.vt-playlist-remove-btn {
+  background: none;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  color: #c00;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 8px;
+}
+
+.vt-playlist-remove-btn:hover {
+  background: #fdd;
+  border-color: #c00;
+}
+
+/* ========================================
+   CHANNEL PAGE - TWO COLUMN LAYOUT
+   ======================================== */
+.vt-channel-body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.vt-channel-left {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.vt-channel-right {
+  min-width: 0;
+}
+
+.vt-channel-tagline {
+  font-size: 11px;
+  color: #666;
+  margin: 2px 0 6px;
+  font-style: italic;
+}
+
+.vt-channel-videos-title {
+  font-size: 14px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+  margin-bottom: 10px;
+}
+
+.vt-channel-playlist-item {
+  padding: 3px 0;
+  font-size: 12px;
+}
+
+.vt-channel-playlist-meta {
+  color: #666;
+  font-size: 11px;
+}
+
+/* ========================================
+   PROFILE BOX (BitView-style)
+   ======================================== */
+.vt-profile-box {
+  border: 1px solid #c3c3c3;
+  background: #fff;
+  font-size: 12px;
+}
+
+.vt-profile-box-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 8px;
+  background: linear-gradient(to bottom, #eff3f7, #d9e0e8);
+  border-bottom: 1px solid #c3c3c3;
+  font-weight: bold;
+  font-size: 12px;
+  color: #333;
+}
+
+.vt-profile-edit {
+  font-size: 11px;
+  font-weight: normal;
+  color: #03c;
+}
+
+.vt-profile-box-body {
+  padding: 8px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #333;
+}
+
+.vt-profile-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.vt-profile-table tr {
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.vt-profile-table tr:last-child {
+  border-bottom: none;
+}
+
+.vt-pt-label {
+  padding: 4px 8px;
+  font-weight: bold;
+  color: #333;
+  white-space: nowrap;
+  width: 130px;
+  vertical-align: top;
+}
+
+.vt-pt-value {
+  padding: 4px 8px;
+  color: #333;
+  text-align: right;
+  word-break: break-word;
+}
+
+/* ========================================
+   ACTIVITY FEED
+   ======================================== */
+.vt-activity-feed {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.vt-activity-empty {
+  padding: 12px 8px;
+  color: #666;
+  text-align: center;
+  font-size: 12px;
+}
+
+.vt-activity-item {
+  padding: 8px;
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.vt-activity-item:last-child {
+  border-bottom: none;
+}
+
+.vt-activity-text {
+  font-size: 12px;
+  color: #333;
+  margin-bottom: 4px;
+}
+
+.vt-activity-time {
+  font-size: 10px;
+  color: #999;
+}
+
+.vt-activity-video {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  padding-left: 10px;
+}
+
+.vt-activity-thumb img {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+}
+
+.vt-activity-video-info {
+  font-size: 11px;
+  color: #333;
+  min-width: 0;
+}
+
+.vt-activity-video-info a {
+  color: #03c;
+  font-weight: bold;
+}
+
+/* ========================================
+   THEME PICKER (Channel Settings)
+   ======================================== */
+.vt-theme-picker {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.vt-theme-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  padding: 4px;
+  border: 2px solid transparent;
+  border-radius: 4px;
+}
+
+.vt-theme-option.selected {
+  border-color: #03c;
+  background: #e8f0fe;
+}
+
+/* ========================================
+   CUSTOM COLOR PICKER PANEL
+   ======================================== */
+.vt-custom-colors-panel {
+  margin-top: 12px;
+  padding: 12px;
+  border: 2px solid #999;
+  background: #f8f8f8;
+  border-radius: 4px;
+}
+
+.vt-custom-colors-panel h4 {
+  margin: 0 0 6px;
+  font-size: 13px;
+  color: #333;
+}
+
+.vt-color-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.vt-color-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.vt-color-label {
+  font-size: 12px;
+  font-weight: bold;
+  color: #333;
+  min-width: 160px;
+}
+
+.vt-color-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.vt-color-input {
+  width: 36px;
+  height: 28px;
+  border: 2px solid #999;
+  border-radius: 3px;
+  padding: 0;
+  cursor: pointer;
+  background: none;
+}
+
+.vt-color-input::-webkit-color-swatch-wrapper {
+  padding: 1px;
+}
+
+.vt-color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 2px;
+}
+
+.vt-color-hex {
+  width: 70px;
+  font-size: 11px;
+  font-family: monospace;
+  padding: 3px 5px;
+  border: 1px solid #bbb;
+  border-radius: 2px;
+  text-align: center;
+}
+
+.vt-custom-preview-box {
+  margin-top: 12px;
+  border: 2px solid #c3c3c3;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.vt-cp-header {
+  padding: 6px 10px;
+  background: #e0e0e0;
+  border-bottom: 2px solid #c3c3c3;
+  font-size: 12px;
+}
+
+.vt-cp-body {
+  padding: 8px 10px;
+  font-size: 12px;
+  background: #fff;
+}
+
+.vt-cp-body a {
+  text-decoration: underline;
+}
+
+.vt-custom-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vt-theme-preview {
+  width: 70px;
+  height: 40px;
+  border: 2px solid #999;
+  border-radius: 3px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 2px;
+}
+
+.vt-theme-label {
+  font-size: 10px;
+  color: #333;
+  margin-top: 2px;
+  text-align: center;
+}
+
+/* ========================================
+   CHANNEL THEMES
+   ======================================== */
+/* Full-bleed: themed channel pages get centered content inside full-width .vt-page */
+.vt-channel-page:not(.vt-theme-grey) {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 10px 8px 40px;
+}
+
+/* Grey (default) */
+.vt-theme-grey .vt-profile-box-header {
+  background: linear-gradient(to bottom, #eff3f7, #d9e0e8);
+  color: #333;
+}
+.vt-theme-grey .vt-profile-box { border-color: #c3c3c3; }
+
+/* Blue */
+.vt-theme-blue {
+  background: #d0e4f5;
+  padding: 10px;
+}
+.vt-theme-blue .vt-profile-box-header {
+  background: linear-gradient(to bottom, #c0d8f0, #8ab4dc);
+  color: #1a3c5e;
+}
+.vt-theme-blue .vt-profile-box { border-color: #6a9ac4; background: #e0eef8; }
+.vt-theme-blue .vt-channel-header { background: #b8d4ee; border: 2px solid #6a9ac4; }
+.vt-theme-blue .vt-channel-body a { color: #03c; }
+.vt-theme-blue .vt-channel-videos-title { color: #1a3c5e; border-color: #6a9ac4; }
+.vt-theme-blue .vt-profile-table tr { border-color: #b0c8e0; }
+.vt-theme-blue .vt-channel-right .vt-video-thumb { background: #e0eef8; border: 1px solid #6a9ac4; padding: 4px; }
+.vt-theme-blue .vt-channel-right .vt-thumb-title { color: #03c !important; }
+.vt-theme-blue .vt-channel-right .vt-thumb-views { color: #1a3c5e; }
+
+/* Red */
+.vt-theme-red {
+  background: #f5d0d0;
+  padding: 10px;
+}
+.vt-theme-red .vt-profile-box-header {
+  background: linear-gradient(to bottom, #f0b0b0, #d07070);
+  color: #500;
+}
+.vt-theme-red .vt-profile-box { border-color: #c06060; background: #fce0e0; }
+.vt-theme-red .vt-channel-header { background: #e8b0b0; border: 2px solid #c06060; }
+.vt-theme-red .vt-channel-body a { color: #c00; }
+.vt-theme-red .vt-channel-videos-title { color: #600; border-color: #c06060; }
+.vt-theme-red .vt-profile-table tr { border-color: #e0b0b0; }
+.vt-theme-red .vt-channel-right .vt-video-thumb { background: #fce0e0; border: 1px solid #c06060; padding: 4px; }
+.vt-theme-red .vt-channel-right .vt-thumb-title { color: #c00 !important; }
+.vt-theme-red .vt-channel-right .vt-thumb-views { color: #500; }
+
+/* Sunlight */
+.vt-theme-sunlight {
+  background: #fff8dc;
+  padding: 10px;
+}
+.vt-theme-sunlight .vt-profile-box-header {
+  background: linear-gradient(to bottom, #ffe8a0, #e6c850);
+  color: #554400;
+}
+.vt-theme-sunlight .vt-profile-box { border-color: #c8a828; background: #fffce8; }
+.vt-theme-sunlight .vt-channel-header { background: #f0e8b0; border: 2px solid #c8a828; }
+.vt-theme-sunlight .vt-channel-body a { color: #996600; }
+.vt-theme-sunlight .vt-channel-videos-title { color: #554400; border-color: #c8a828; }
+.vt-theme-sunlight .vt-profile-table tr { border-color: #e0d090; }
+.vt-theme-sunlight .vt-channel-right .vt-video-thumb { background: #fffce8; border: 1px solid #c8a828; padding: 4px; }
+.vt-theme-sunlight .vt-channel-right .vt-thumb-title { color: #996600 !important; }
+.vt-theme-sunlight .vt-channel-right .vt-thumb-views { color: #554400; }
+
+/* Forest */
+.vt-theme-forest {
+  background: #d5ead0;
+  padding: 10px;
+}
+.vt-theme-forest .vt-profile-box-header {
+  background: linear-gradient(to bottom, #a8d898, #6cb050);
+  color: #1a3a10;
+}
+.vt-theme-forest .vt-profile-box { border-color: #5a9840; background: #e5f5e0; }
+.vt-theme-forest .vt-channel-header { background: #b8dab0; border: 2px solid #5a9840; }
+.vt-theme-forest .vt-channel-body a { color: #060; }
+.vt-theme-forest .vt-channel-videos-title { color: #1a3a10; border-color: #5a9840; }
+.vt-theme-forest .vt-profile-table tr { border-color: #b0d0a0; }
+.vt-theme-forest .vt-channel-right .vt-video-thumb { background: #e5f5e0; border: 1px solid #5a9840; padding: 4px; }
+.vt-theme-forest .vt-channel-right .vt-thumb-title { color: #060 !important; }
+.vt-theme-forest .vt-channel-right .vt-thumb-views { color: #1a3a10; }
+
+/* 8-bit */
+.vt-theme-8bit {
+  background: #111;
+  padding: 10px;
+}
+.vt-theme-8bit .vt-channel-header {
+  background: #000;
+  border: 2px solid #0f0;
+}
+.vt-theme-8bit .vt-channel-header h2 { color: #0f0; }
+.vt-theme-8bit .vt-channel-header .vt-channel-tagline { color: #0a0; }
+.vt-theme-8bit .vt-profile-box-header {
+  background: #0f0;
+  color: #000;
+  border-color: #0f0;
+}
+.vt-theme-8bit .vt-profile-box {
+  border-color: #0f0;
+  background: #000;
+  color: #0f0;
+}
+.vt-theme-8bit .vt-profile-box-body,
+.vt-theme-8bit .vt-pt-label,
+.vt-theme-8bit .vt-pt-value,
+.vt-theme-8bit .vt-activity-text,
+.vt-theme-8bit .vt-activity-empty { color: #0f0; }
+.vt-theme-8bit .vt-profile-box a { color: #0ff; }
+.vt-theme-8bit .vt-activity-time { color: #0a0; }
+.vt-theme-8bit .vt-channel-videos-title { color: #0f0; border-color: #0f0; }
+.vt-theme-8bit .vt-channel-right .vt-thumb-title { color: #0ff !important; }
+.vt-theme-8bit .vt-channel-right .vt-thumb-views { color: #0a0; }
+.vt-theme-8bit .vt-channel-right .vt-settings-link { color: #0ff; }
+.vt-theme-8bit .vt-channel-right .vt-video-thumb { background: #000; border: 1px solid #0f0; padding: 4px; }
+
+/* Princess */
+.vt-theme-princess {
+  background: #fde0ef;
+  padding: 10px;
+}
+.vt-theme-princess .vt-profile-box-header {
+  background: linear-gradient(to bottom, #fcc0de, #f090c0);
+  color: #880066;
+}
+.vt-theme-princess .vt-profile-box { border-color: #e080b0; background: #fef0f5; }
+.vt-theme-princess .vt-channel-header { background: #f0b8d8; border: 2px solid #e080b0; }
+.vt-theme-princess .vt-channel-body a { color: #c0c; }
+.vt-theme-princess .vt-channel-videos-title { color: #880066; border-color: #e080b0; }
+.vt-theme-princess .vt-profile-table tr { border-color: #f0c0d8; }
+.vt-theme-princess .vt-channel-right .vt-video-thumb { background: #fef0f5; border: 1px solid #e080b0; padding: 4px; }
+.vt-theme-princess .vt-channel-right .vt-thumb-title { color: #c0c !important; }
+.vt-theme-princess .vt-channel-right .vt-thumb-views { color: #880066; }
+
+/* Fire */
+.vt-theme-fire {
+  background: #c00;
+  padding: 10px;
+}
+.vt-theme-fire .vt-channel-header {
+  background: #e00;
+  border: 2px solid #ff0;
+}
+.vt-theme-fire .vt-channel-header h2 { color: #ff0; }
+.vt-theme-fire .vt-channel-header .vt-channel-tagline { color: #ffa; }
+.vt-theme-fire .vt-profile-box-header {
+  background: #f60;
+  color: #ff0;
+  border-color: #ff0;
+}
+.vt-theme-fire .vt-profile-box {
+  border: 2px solid #ff0;
+  background: #e00;
+  color: #ff0;
+}
+.vt-theme-fire .vt-profile-box-body,
+.vt-theme-fire .vt-pt-label,
+.vt-theme-fire .vt-pt-value,
+.vt-theme-fire .vt-activity-text,
+.vt-theme-fire .vt-activity-empty { color: #ff0; }
+.vt-theme-fire .vt-profile-box a { color: #ff0; }
+.vt-theme-fire .vt-activity-time { color: #ffa; }
+.vt-theme-fire .vt-channel-videos-title { color: #ff0; border-color: #ff0; }
+.vt-theme-fire .vt-channel-right .vt-thumb-title { color: #ff0 !important; }
+.vt-theme-fire .vt-channel-right .vt-thumb-views { color: #ffa; }
+.vt-theme-fire .vt-channel-right .vt-settings-link { color: #ff0; }
+.vt-theme-fire .vt-channel-right .vt-video-thumb { background: #e00; border: 1px solid #ff0; padding: 4px; }
+.vt-theme-fire .vt-subscribe-btn { background: #ff0; color: #c00; border-color: #ff0; }
+.vt-theme-fire .vt-channel-playlist-item a { color: #ff0; }
+.vt-theme-fire .vt-channel-playlist-meta { color: #ffa; }
+.vt-theme-fire .vt-profile-table tr { border-color: #ff6600; }
+
+/* Stealth */
+.vt-theme-stealth {
+  background: #1a1a2e;
+  padding: 10px;
+}
+.vt-theme-stealth .vt-channel-header {
+  background: #16162a;
+  border: 2px solid #555;
+}
+.vt-theme-stealth .vt-channel-header h2 { color: #ccc; }
+.vt-theme-stealth .vt-channel-header .vt-channel-tagline { color: #888; }
+.vt-theme-stealth .vt-profile-box-header {
+  background: linear-gradient(to bottom, #2a2a44, #16162a);
+  color: #aaa;
+  border-color: #555;
+}
+.vt-theme-stealth .vt-profile-box {
+  border-color: #444;
+  background: #16162a;
+  color: #ccc;
+}
+.vt-theme-stealth .vt-profile-box-body,
+.vt-theme-stealth .vt-pt-label,
+.vt-theme-stealth .vt-pt-value,
+.vt-theme-stealth .vt-activity-text,
+.vt-theme-stealth .vt-activity-empty { color: #ccc; }
+.vt-theme-stealth .vt-profile-box a { color: #8888cc; }
+.vt-theme-stealth .vt-activity-time { color: #888; }
+.vt-theme-stealth .vt-channel-videos-title { color: #ccc; border-color: #555; }
+.vt-theme-stealth .vt-channel-right .vt-thumb-title { color: #8888cc !important; }
+.vt-theme-stealth .vt-channel-right .vt-thumb-views { color: #888; }
+.vt-theme-stealth .vt-channel-right .vt-settings-link { color: #aaa; }
+.vt-theme-stealth .vt-channel-right .vt-video-thumb { background: #16162a; border: 1px solid #444; padding: 4px; }
+.vt-theme-stealth .vt-profile-table tr { border-color: #333; }
+.vt-theme-stealth .vt-channel-playlist-item a { color: #8888cc; }
+.vt-theme-stealth .vt-channel-playlist-meta { color: #888; }
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 800px) {
+  .watch-layout {
+    grid-template-columns: 1fr;
+  }
+  .player-container,
+  .vt-actions-stats,
+  .vt-comments-section {
+    width: 100%;
+  }
+  .vt-video-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .vt-channel-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 500px) {
+  .vt-video-grid {
+    grid-template-columns: 1fr;
+  }
+  .vt-categories-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

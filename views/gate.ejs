@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+  <link rel="icon" href="/icons/favicon.ico">
+  <link rel="stylesheet" href="/public/css/style.css">
+  <style>
+    body { background: #f5f5f5; margin: 0; font-family: Arial, Helvetica, sans-serif; }
+    .gate-wrap {
+      max-width: 420px;
+      margin: 60px auto;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 30px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .gate-logo { text-align: center; margin-bottom: 20px; }
+    .gate-logo img { height: 40px; }
+    .gate-title {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 6px;
+    }
+    .gate-subtitle {
+      text-align: center;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+    .gate-error {
+      background: #fdd;
+      border: 1px solid #c00;
+      color: #900;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .gate-form-group {
+      margin-bottom: 14px;
+    }
+    .gate-form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: bold;
+      color: #555;
+      margin-bottom: 4px;
+    }
+    .gate-form-group input {
+      width: 100%;
+      padding: 8px 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    .gate-form-group input:focus {
+      outline: none;
+      border-color: #03c;
+      box-shadow: 0 0 3px rgba(0,50,200,0.2);
+    }
+    .gate-submit {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      font-weight: bold;
+      background: linear-gradient(to bottom, #6cb033, #4a8a1c);
+      color: #fff;
+      border: 1px solid #3a7a10;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .gate-submit:hover {
+      background: linear-gradient(to bottom, #7cc043, #5a9a2c);
+    }
+    .gate-links {
+      text-align: center;
+      margin-top: 16px;
+      font-size: 12px;
+    }
+    .gate-links a {
+      color: #03c;
+      text-decoration: none;
+      margin: 0 8px;
+    }
+    .gate-links a:hover { text-decoration: underline; }
+    .gate-lock {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="gate-wrap">
+    <div class="gate-logo">
+      <a href="/gate"><img src="/icons/viewtapelogo.png" alt="ViewTape"></a>
+    </div>
+    <div class="gate-lock">&#128274;</div>
+    <div class="gate-title">Server Access Required</div>
+    <div class="gate-subtitle">This ViewTape server is password-protected.</div>
+
+    <% if (error) { %>
+      <div class="gate-error"><%= error %></div>
+    <% } %>
+
+    <form method="POST" action="/gate">
+      <div class="gate-form-group">
+        <label for="password">Server Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter server password..." required autofocus>
+      </div>
+
+      <% if (needs2FA) { %>
+        <div class="gate-form-group">
+          <label for="totp_code">2FA Code</label>
+          <input type="text" id="totp_code" name="totp_code" placeholder="6-digit code from your authenticator app" maxlength="6" autocomplete="off">
+        </div>
+      <% } %>
+
+      <button type="submit" class="gate-submit">Unlock Server</button>
+    </form>
+
+    <div class="gate-links">
+      <a href="/gate/access-qr">Scan QR Code to Access</a>
+      <% if (needs2FA) { %>
+        | <a href="/gate/2fa-setup-qr">Setup 2FA App</a>
+      <% } %>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,570 @@
+@font-face {
+  font-family: 'OriginalYTFont';
+  src: url('assets/fonts/27_Arial_10pt_st.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+  background: #ffffff;
+  margin: 0;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.player-container {
+  position: relative; /* Ensure positioning context */
+  z-index: 0; /* baseline */
+}
+
+.yt-input-row {
+  width: 100%;
+  max-width: 640px;
+  margin-bottom: 10px;
+}
+
+.yt-input-row form {
+  display: flex;
+  gap: 8px;
+}
+
+.yt-input-row input[type="url"] {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.yt-input-row button[type="submit"] {
+  padding: 8px 12px;
+  border: 1px solid #bbb;
+  background: #f3f3f3;
+  border-radius: 4px;
+  color: #333;
+  cursor: pointer;
+}
+
+.yt-input-error {
+  color: #c00;
+  font-size: 13px;
+  margin-top: 6px;
+  min-height: 16px;
+}
+
+/* In fullscreen, the bottom-bar should also stretch full width */
+.player-container:fullscreen {
+width: 100vw;
+height: 100vh;
+display: flex;
+flex-direction: column; /* video-area on top, bottom-bar at bottom */
+}
+
+.player-container:fullscreen .bottom-bar {
+/* Bottom bar stays at bottom in normal flow */
+flex-shrink: 0; /* has a fixed height of 31px */
+}
+
+/* In fullscreen, let bottom-bar span entire width */
+.player-container:fullscreen .bottom-bar {
+width: 100%;
+}
+
+/* Fullscreen mode fills screen */
+.player-container:fullscreen,
+.player-container:-webkit-full-screen,
+.player-container:-moz-full-screen,
+.player-container:-ms-fullscreen {
+width: 100vw;
+height: 100vh;
+position: fixed;
+top: 0; left: 0;
+display: flex;
+flex-direction: column;
+}
+.player-container:fullscreen .controls-bar {
+  width: 100%; /* Stretch controls across full monitor width in fullscreen */
+}
+
+.player-container:fullscreen .controls-bar,
+.player-container:-webkit-full-screen .controls-bar,
+.player-container:-moz-full-screen .controls-bar,
+.player-container:-ms-fullscreen .controls-bar {
+width: 100%;
+}
+
+.video-area {
+width: 100%;
+height: 100%;
+min-width: 480px;
+min-height: 360px;
+flex: 1;
+position: relative;
+display:flex;
+justify-content: center;
+align-items: center;
+z-index: 1;
+background: #000; 
+}
+
+.video-area video {
+  background-color: #000;
+  min-width: 100%;
+  min-height: auto;
+}
+
+#ytContainer, #ytContainer iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.video-area:fullscreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.video-area:fullscreen video {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+
+#loadingIndicator {
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+width: 30px; /* match your frame width */
+height: 30px; /* match your frame height */
+background: url('assets/loading_frames/1.png') no-repeat center center;
+background-size: 30px 30px; /* exact frame size */
+display: none; /* hidden by default */
+z-index: 100000000000;
+will-change: background-image;
+}
+
+.ended-buttons {
+  display: block;
+  position: absolute;
+  top: 20%;
+  left: 55%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 999999; 
+  pointer-events: auto;
+  white-space: nowrap; /* ensures buttons stay on one line */
+}
+
+.ended-buttons button {
+  display: inline-block;
+  border: none;
+  background-color: transparent; 
+  cursor: pointer;
+  vertical-align: middle;
+  margin: 0 -35px;
+  width: 188px;
+  height: 53px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+
+
+video {
+  position: relative;
+  z-index: 1; 
+}
+
+.ended-buttons {
+  z-index: 999999; /* higher than video's z-index */
+}
+
+
+/* Share Button (3 frames: 1.png normal, 2.png hover, 3.png active) */
+.share-btn {
+  background-image: url('assets/share_controls/1.png');
+}
+
+.share-btn:hover {
+  background-image: url('assets/share_controls/2.png');
+}
+
+.share-btn:active {
+  background-image: url('assets/share_controls/3.png');
+}
+
+/* Watch Again Button (2 frames: 1.png normal, 2.png hover/active) */
+.watch-again-btn {
+  background-image: url('assets/play_again_controls/1.png');
+}
+
+.watch-again-btn:hover,
+.watch-again-btn:active {
+  background-image: url('assets/play_again_controls/2.png');
+}
+
+
+/* Bottom bar setup */
+.bottom-bar {
+position: relative;
+display: flex;
+align-items: flex-end;
+height: 31px;
+}
+
+.player-container:fullscreen .bottom-bar,
+.player-container:-webkit-full-screen .bottom-bar,
+.player-container:-moz-full-screen .bottom-bar,
+.player-container:-ms-fullscreen .bottom-bar {
+position: absolute;
+bottom: 0; left: 0;
+width: 100%;
+}
+
+.bar-left,
+.bar-right,
+.progress-handle {
+image-rendering: smooth; /* or smooth if supported */
+}
+
+.bar-left {
+width: 5px; /* exact width of bg_left.png */
+height: 31px;
+background: url('assets/background/bg_left.png') no-repeat left bottom;
+flex-shrink: 0;
+margin: 0; padding: 0;
+}
+
+.bar-center {
+height: 31px;
+margin: 0; padding: 0;
+background: url('assets/background/bg_center.png') repeat-x left bottom;
+width: 100%; /* In fullscreen, let it span entire width */
+}
+
+.bar-right {
+width: 5px; /* exact width of bg_right.png */
+height: 31px;
+background: url('assets/background/bg_right.png') no-repeat right bottom;
+flex-shrink: 0;
+margin: 0; padding: 0;
+}
+
+.bar-left { width: 5px; height: 31px; background: url('assets/background/bg_left.png') no-repeat left bottom; flex-shrink:0; }
+.bar-center { height:31px; background:url('assets/background/bg_center.png') repeat-x left bottom; flex:1; }
+.bar-right { width:5px; height:31px; background:url('assets/background/bg_right.png') no-repeat right bottom; flex-shrink:0; }
+
+/* Controls bar sits above the backgrounds */
+.controls-bar {
+position: absolute;
+width:100%;
+top:0; left:0; right:0; bottom:0;
+display: flex;
+align-items: center;
+box-sizing: border-box;
+z-index:9999;
+padding:0 4px;
+}
+
+.player-container:fullscreen .controls-bar,
+.player-container:-webkit-full-screen .controls-bar,
+.player-container:-moz-full-screen .controls-bar,
+.player-container:-ms-fullscreen .controls-bar {
+width: 100%;
+}
+
+.left-controls {
+display: flex;
+align-items: center;
+}
+.right-controls {
+display: flex;
+align-items: center;
+margin-left: auto; /* pushes this group to the far right */
+}
+.control-button {
+display: inline-block;
+vertical-align: middle;
+border: none;
+cursor: pointer;
+padding: 0;
+margin: 0;
+background: none;
+}
+
+/* Play/Pause Button (not playing) */
+.pause-btn {
+width: 30px; 
+height: 25px;
+background:
+  url('assets/playpausebuttons/play_icon.png') no-repeat 60% center,
+  url('assets/playpausebuttons/play_pause_bg.png') no-repeat 50% 50%;
+margin-right: 1px;
+}
+.pause-btn:hover {
+background:
+  url('assets/playpausebuttons/play_icon_hover.png') no-repeat 60% center,
+  url('assets/playpausebuttons/play_pause_bg.png') no-repeat 50% 50%;
+}
+.pause-btn:active {
+background:
+  url('assets/playpausebuttons/play_icon_hover.png') no-repeat 60% center,
+  url('assets/playpausebuttons/play_pause_bg_clicked.png') no-repeat 50% 50%;
+}
+
+/* Play/Pause Button (playing) */
+.pause-btn.playing {
+background:
+  url('assets/playpausebuttons/pause_icon.png') no-repeat 60% center,
+  url('assets/playpausebuttons/play_pause_bg.png') no-repeat 50% 50%;
+}
+.pause-btn.playing:hover {
+background:
+  url('assets/playpausebuttons/pause_icon_hover.png') no-repeat 60% center,
+  url('assets/playpausebuttons/play_pause_bg.png') no-repeat 50% 50%;
+}
+.pause-btn.playing:active {
+background:
+  url('assets/playpausebuttons/pause_icon_hover.png') no-repeat 60% center,
+  url('assets/playpausebuttons/play_pause_bg_clicked.png') no-repeat 50% 50%;
+}
+
+/* Rewind Button */
+.rewind-btn {
+width: 23px;
+height: 25px;
+background:
+  url('assets/rewind/rewind.png') no-repeat center center,
+  url('assets/rewind/rewind_bg.png') no-repeat center center;
+}
+.rewind-btn:hover {
+background:
+  url('assets/rewind/rewind_icon_hover.png') no-repeat center center,
+  url('assets/rewind/rewind_bg.png') no-repeat center center;
+}
+.rewind-btn:active {
+background:
+  url('assets/rewind/rewind_icon_hover.png') no-repeat center center,
+  url('assets/rewind/rewind_bg_clicked.png') no-repeat center center;
+}
+
+/* Timeline */
+.progress-section {
+position: relative;
+height: 8px;
+background: none;
+flex: 1;
+min-width: 0;
+margin: 0 12px;
+z-index: 9999;
+display: block;
+}
+
+.progress-background {
+width:auto;
+height: 8px;
+background: url('assets/timeline/timeline.png') repeat-x left center;
+position: relative;
+top: 50%;
+transform: translateY(-50%);
+}
+.progress-loaded {
+left: 0; /* Will be set in JS as a % */
+background: url('assets/timeline/played_bar_connected.png') repeat-x left center;
+opacity: 0.6;
+z-index: 1;
+}
+
+.progress-red {
+position: absolute;
+top: 0;
+left: 0; /* Dynamically set by JS */
+height: 8px;
+background: url('assets/timeline/played_bar_connected.png') repeat-x left center;
+z-index: 2;
+}
+
+.progress-loaded,
+.progress-red {
+position: absolute;
+top: 0;
+height: 8px;
+will-change: left, width;
+}
+
+.progress-handle {
+  position: absolute;
+  top: 50%;  /* center vertically */
+  transform: translateY(-50%);
+  width: 21px;
+  height: 21px;
+  background: url('assets/timeline/cursor/timeline_cursor.png') no-repeat center center;
+  cursor: pointer;
+  z-index: 9999;
+  will-change: left;
+}
+.progress-handle.active {
+  background: url('assets/timeline/cursor/timeline_cursor_red.png') no-repeat center center !important;
+}
+
+.progress-loaded,
+.progress-red {
+  position: absolute;
+  top: 0;
+  height: 8px;
+}
+
+
+.player-container:fullscreen .progress-section,
+.player-container:-webkit-full-screen .progress-section,
+.player-container:-moz-full-screen .progress-section,
+.player-container:-ms-fullscreen .progress-section {
+flex: 1;
+min-width: 0;
+width: auto;
+}
+
+/* Time Section */
+.time-section {
+display: inline-block;
+vertical-align: middle;
+margin-left:8px;
+margin-right: 0px;
+font-family: 'OriginalYTFont', Arial, sans-serif;
+}
+
+.time-box {
+width: 70px;
+height: 18px;
+background: url('assets/timeline/time_bg.png') no-repeat center center;
+text-align: center;
+line-height: 18px;
+font-size: 10px;
+color: #fff;
+display: inline-block;
+vertical-align: middle;
+margin-right: 10px;
+margin-left: -10px;
+}
+
+.time-current { color: #fff; }
+.time-total { color: #C00; }
+.time-sep { color: #fff; margin: 0 2px; }
+
+/* Divider */
+.divider {
+width: 2px;
+height: 31px;
+background: url('assets/background/divider.png') no-repeat center center;
+display: inline-block;
+vertical-align: middle;
+}
+
+/* Volume Section */
+.volume-section {
+display: inline-flex;
+align-items: center;
+vertical-align: middle;
+margin: 0 8px;
+}
+
+.volume-track {
+position: relative;
+width: 45px;
+height: 4px;
+background: url('assets/volume/volume_slider_bg.png') repeat-x center center;
+margin-right: 4px;
+}
+
+.volume-level {
+position: absolute;
+top: 0;
+left: 0;
+height: 4px;
+width: 100%;
+background: url('assets/volume/volume_indicator.png') repeat-x center center;
+pointer-events: none;
+}
+
+.volume-handle {
+position: absolute;
+width: 7px;
+height: 20px;
+background: url('assets/volume/volume_slider.png') no-repeat center center;
+top: 50%;
+transform: translateY(-50%);
+left: 100%; 
+cursor: pointer;
+z-index: 9999;
+}
+
+/* Default volume icon (volume_icon_4.png) */
+.volume-btn {
+display: inline-block;
+vertical-align: middle;
+width: 20px; 
+height: 20px;
+margin-left: 4px;
+background: url('assets/volume/volume_icon_4.png') no-repeat center center;
+background-size: contain;
+}
+
+/* Muted class to grey out at 0% volume */
+.volume-btn.muted {
+filter: grayscale(100%);
+opacity: 0.7;
+}
+
+/* Fullscreen Button */
+.fullscreen-btn {
+display: inline-block;
+vertical-align: middle;
+margin-left: 3px;
+margin-right: 3px;
+width: 25px; /* Ensure exact size matches your frames (e.g., 20px) */
+height: 18px;
+background: url('assets/fullscreen_button/1.png') no-repeat center center;
+background-size: 25px 18px; /* Match frame size exactly to avoid scaling */
+image-rendering: auto; /* Let browser smooth it out */
+transition:  0.3s ease; /* For fade effect on frame 24 -> 1 */
+will-change: background-image;
+}
+
+.fullscreen-btn:fullscreen {
+display: inline-block;
+vertical-align: middle;
+margin-left: 3px;
+margin-right: 6px;
+width: 25px; /* Ensure exact size matches your frames (e.g., 20px) */
+height: 18px;
+background: url('assets/fullscreen_button/1.png') no-repeat center center;
+background-size: 25px 18px; /* Match frame size exactly to avoid scaling */
+image-rendering: auto; /* Let browser smooth it out */
+transition:  0.3s ease; /* For fade effect on frame 24 -> 1 */
+}
+
+.exit-icon {
+background-image: url('assets/fullscreen_button/exit_fullscreen.png');
+background-size: 45px 15px;
+width: 45px;
+height: 15px;
+}
+
+@media (max-width: 400px) {
+.time-box {
+  display: none;
+}
+}

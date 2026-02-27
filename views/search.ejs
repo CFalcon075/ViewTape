@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+
+<div class="vt-search-page">
+  <h2>Search Results for "<%= query %>"</h2>
+
+  <% if (channels.length > 0) { %>
+    <div class="vt-search-section">
+      <h3 class="vt-search-section-title">Channels</h3>
+      <div class="vt-channels-grid">
+        <% channels.forEach(function(ch) { %>
+          <div class="vt-channel-card">
+            <a href="/channel/<%= ch.username %>">
+              <% if (ch.avatar && ch.avatar !== 'pfp1.png' && ch.avatar !== 'pfp2.png') { %>
+                <img src="/uploads/avatars/<%= ch.avatar %>" alt="" class="vt-channel-card-avatar">
+              <% } else { %>
+                <img src="/icons/<%= ch.avatar || 'pfp1.png' %>" alt="" class="vt-channel-card-avatar">
+              <% } %>
+            </a>
+            <div class="vt-channel-card-info">
+              <a href="/channel/<%= ch.username %>" class="vt-channel-card-name"><%= ch.username %></a>
+              <span class="vt-channel-card-meta"><%= ch.video_count %> video<%= ch.video_count !== 1 ? 's' : '' %> &middot; <%= ch.subscriber_count %> subscriber<%= ch.subscriber_count !== 1 ? 's' : '' %></span>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  <% } %>
+
+  <% if (videos.length > 0) { %>
+    <div class="vt-search-section">
+      <h3 class="vt-search-section-title">Videos</h3>
+      <div class="vt-video-grid">
+        <% videos.forEach(function(video) { %>
+          <div class="vt-video-thumb">
+            <a href="/watch?v=<%= video.id %>">
+              <div class="vt-thumb-img-wrap">
+                <% if (video.thumbnail) { %>
+                  <img src="/uploads/thumbnails/<%= video.thumbnail %>" alt="<%= video.title %>">
+                <% } else { %>
+                  <div class="vt-thumb-placeholder"></div>
+                <% } %>
+              </div>
+            </a>
+            <div class="vt-thumb-info">
+              <a href="/watch?v=<%= video.id %>" class="vt-thumb-title"><%= video.title %></a>
+              <div class="vt-thumb-meta">
+                <a href="/channel/<%= video.username %>" class="vt-thumb-author"><%= video.username %></a>
+                <span class="vt-thumb-views"><%= video.views.toLocaleString() %> views</span>
+              </div>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  <% } %>
+
+  <% if (videos.length === 0 && channels.length === 0) { %>
+    <p class="vt-no-results">No results found matching your search.</p>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

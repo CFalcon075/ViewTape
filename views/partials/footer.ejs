@@ -1,0 +1,33 @@
+  </div>
+  <div class="vt-footer">
+    <p>&copy; 2007 ViewTape, LLC | <a href="/">Home</a> | <a href="/categories">Categories</a> | <a href="/channels">Channels</a> | <a href="/upload">Upload</a></p>
+  </div>
+<script>
+(function() {
+  document.querySelectorAll('.vt-ql-icon').forEach(function(icon) {
+    icon.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      var vid = this.getAttribute('data-vid');
+      var el = this;
+      var form = new URLSearchParams();
+      form.append('video_id', vid);
+      form.append('return_to', window.location.pathname + window.location.search);
+      fetch('/quicklist/add', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+        body: form.toString()
+      }).then(function(r) { return r.json(); }).then(function(d) {
+        if (d.success) {
+          el.classList.add('added');
+          el.title = 'Added to QuickList!';
+        }
+      }).catch(function() {
+        window.location.href = '/login';
+      });
+    });
+  });
+})();
+</script>
+</body>
+</html>

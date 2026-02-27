@@ -1,0 +1,285 @@
+<%- include('partials/header') %>
+<link rel="stylesheet" href="/public/css/player.css">
+
+<div class="watch-layout watch-classic">
+  <div class="watch-left">
+    <div class="watch-title-left"><%= video.title %></div>
+
+    <div class="player-container">
+      <div class="video-area">
+        <video id="myVideo" preload="metadata" src="/uploads/videos/<%= video.filename %>"></video>
+        <div id="loadingIndicator"></div>
+        <div class="ended-buttons" id="endedButtons">
+          <button class="watch-again-btn" id="watchAgainBtn" title="Watch Again"></button>
+        </div>
+      </div>
+      <div class="bottom-bar">
+        <div class="bar-left"></div>
+        <div class="bar-center"></div>
+        <div class="bar-right"></div>
+        <div class="controls-bar">
+          <div class="left-controls">
+            <button class="control-button pause-btn" id="playPauseBtn"></button>
+            <button class="control-button rewind-btn" id="rewindBtn"></button>
+          </div>
+          <div class="progress-section">
+            <div class="progress-background"></div>
+            <div class="progress-loaded" id="progressLoaded"></div>
+            <div class="progress-red" id="progressRed"></div>
+            <div class="progress-handle" id="progressHandle"></div>
+          </div>
+          <div class="right-controls">
+            <div class="time-section">
+              <div class="time-box">
+                <span class="time-current" id="timeCurrent">00:00</span>
+                <span class="time-sep"> / </span>
+                <span class="time-total" id="timeTotal">0:00</span>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="volume-section">
+              <div class="volume-track" id="volumeTrack">
+                <div class="volume-level" id="volumeLevel"></div>
+                <div class="volume-handle" id="volumeHandle"></div>
+              </div>
+              <button class="control-button volume-btn" id="volumeBtn" title="Volume"></button>
+            </div>
+            <div class="divider"></div>
+            <button class="control-button fullscreen-btn" id="fullscreenBtn" title="Fullscreen"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions & Stats -->
+    <div class="vt-actions-stats">
+      <div class="vt-actions-row">
+        <div class="vt-rating-block">
+          <div class="vt-stars-row">
+            <% if (currentUser && currentUser.id !== video.user_id) { %>
+              <% for (let i = 1; i <= 5; i++) { %>
+                <form method="POST" action="/rate" style="display:inline;">
+                  <input type="hidden" name="video_id" value="<%= video.id %>">
+                  <input type="hidden" name="stars" value="<%= i %>">
+                  <button type="submit" class="vt-star-btn <% if (userRating && userRating.stars >= i) { %>active<% } %>">
+                    <% if (i <= Math.round(ratingStats.avg_rating)) { %>&#9733;<% } else { %>&#9734;<% } %>
+                  </button>
+                </form>
+              <% } %>
+            <% } else { %>
+              <% for (let i = 1; i <= 5; i++) { %>
+                <span class="vt-star-display"><% if (i <= Math.round(ratingStats.avg_rating)) { %>&#9733;<% } else { %>&#9734;<% } %></span>
+              <% } %>
+            <% } %>
+          </div>
+          <div class="vt-rating-count"><%= ratingStats.rating_count %> ratings</div>
+        </div>
+
+        <div class="vt-thumbs-block">
+          <% if (currentUser && currentUser.id !== video.user_id) { %>
+            <form method="POST" action="/rate" style="display:inline;">
+              <input type="hidden" name="video_id" value="<%= video.id %>">
+              <input type="hidden" name="thumb" value="up">
+              <button type="submit" class="vt-thumb-btn <% if (userRating && userRating.thumb === 'up') { %>active<% } %>">
+                <img src="/icons/thumbsup.png" alt="Thumbs Up" class="vt-thumb-icon"> <span><%= ratingStats.thumbs_up %></span>
+              </button>
+            </form>
+            <form method="POST" action="/rate" style="display:inline;">
+              <input type="hidden" name="video_id" value="<%= video.id %>">
+              <input type="hidden" name="thumb" value="down">
+              <button type="submit" class="vt-thumb-btn <% if (userRating && userRating.thumb === 'down') { %>active<% } %>">
+                <img src="/icons/thumbsdown.png" alt="Thumbs Down" class="vt-thumb-icon"> <span><%= ratingStats.thumbs_down %></span>
+              </button>
+            </form>
+          <% } else { %>
+            <span class="vt-thumb-btn disabled"><img src="/icons/thumbsup.png" alt="Thumbs Up" class="vt-thumb-icon"> <span><%= ratingStats.thumbs_up %></span></span>
+            <span class="vt-thumb-btn disabled"><img src="/icons/thumbsdown.png" alt="Thumbs Down" class="vt-thumb-icon"> <span><%= ratingStats.thumbs_down %></span></span>
+          <% } %>
+        </div>
+      </div>
+      <div class="vt-stats-row">
+        <span>Views: <strong><%= video.views.toLocaleString() %></strong></span>
+        <span class="vt-stat-divider">|</span>
+        <span>Comments: <strong><%= comments.length %></strong></span>
+      </div>
+      <% if (currentUser) { %>
+        <div class="vt-playlist-actions">
+          <button type="button" class="vt-add-quicklist-btn" id="addQuicklistBtn" data-vid="<%= video.id %>">+ Add to QuickList</button>
+          <% var regularPlaylists = userPlaylists.filter(function(pl) { return !pl.is_quicklist; }); %>
+          <% if (regularPlaylists.length > 0) { %>
+            <div class="vt-add-to-playlist-dropdown">
+              <button type="button" class="vt-add-playlist-btn" onclick="document.getElementById('playlistDropdown').classList.toggle('open')">+ Add to Playlist</button>
+              <div class="vt-playlist-dropdown" id="playlistDropdown">
+                <% regularPlaylists.forEach(function(pl) { %>
+                  <button type="button" class="vt-playlist-dropdown-item" data-vid="<%= video.id %>" data-pid="<%= pl.id %>"><%= pl.name %></button>
+                <% }); %>
+              </div>
+            </div>
+          <% } %>
+          <span id="playlistStatus" style="font-size:12px;margin-left:8px;"></span>
+        </div>
+        <script>
+        (function() {
+          var vid = '<%= video.id %>';
+
+          function postAdd(url, body, btn, originalText) {
+            btn.disabled = true;
+            btn.textContent = 'Adding...';
+            var status = document.getElementById('playlistStatus');
+            fetch(url, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/json' },
+              body: body
+            }).then(function(r) { return r.json(); }).then(function(data) {
+              if (data.success) {
+                btn.textContent = 'Added!';
+                btn.style.opacity = '0.7';
+                if (status) { status.textContent = data.message; status.style.color = 'green'; }
+              } else if (data.duplicate) {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                if (status) { status.textContent = data.message; status.style.color = '#c60'; }
+              } else {
+                btn.textContent = originalText;
+                btn.disabled = false;
+                if (status) { status.textContent = data.error || 'Error'; status.style.color = 'red'; }
+              }
+            }).catch(function() {
+              btn.textContent = originalText;
+              btn.disabled = false;
+              if (status) { status.textContent = 'Failed - try again'; status.style.color = 'red'; }
+            });
+          }
+
+          var qlBtn = document.getElementById('addQuicklistBtn');
+          if (qlBtn) {
+            qlBtn.addEventListener('click', function() {
+              postAdd('/quicklist/add', 'video_id=' + vid, qlBtn, '+ Add to QuickList');
+            });
+          }
+
+          document.querySelectorAll('.vt-playlist-dropdown-item').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+              var pid = this.getAttribute('data-pid');
+              var name = this.textContent;
+              postAdd('/playlist/add', 'video_id=' + vid + '&playlist_id=' + pid, this, name);
+              var dd = document.getElementById('playlistDropdown');
+              if (dd) dd.classList.remove('open');
+            });
+          });
+        })();
+        </script>
+      <% } %>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="vt-comments-section">
+      <h3>Comments (<%= comments.length %>)</h3>
+      <% if (currentUser) { %>
+        <form class="vt-comment-form" method="POST" action="/comment">
+          <input type="hidden" name="video_id" value="<%= video.id %>">
+          <textarea name="text" rows="3" placeholder="Write a comment..." required></textarea>
+          <button type="submit" class="vt-comment-submit">Post Comment</button>
+        </form>
+      <% } else { %>
+        <p class="vt-login-prompt"><a href="/login">Log in</a> or <a href="/signup">Sign up</a> to post a comment.</p>
+      <% } %>
+      <div class="vt-comments-list">
+        <% comments.forEach(function(comment) { %>
+          <div class="vt-comment">
+            <div class="vt-comment-header">
+              <img src="<% if (comment.avatar && comment.avatar !== 'pfp1.png' && comment.avatar !== 'pfp2.png') { %>/uploads/avatars/<%= comment.avatar %><% } else { %>/icons/<%= comment.avatar %><% } %>" alt="" class="vt-comment-avatar">
+              <a href="/channel/<%= comment.username %>" class="vt-comment-author"><%= comment.username %></a>
+              <span class="vt-comment-date"><%= new Date(comment.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></span>
+              <% if (currentUser && currentUser.id === comment.user_id) { %>
+                <form method="POST" action="/delete-comment" style="display:inline; margin-left:auto;">
+                  <input type="hidden" name="comment_id" value="<%= comment.id %>">
+                  <input type="hidden" name="video_id" value="<%= video.id %>">
+                  <button type="submit" class="vt-comment-delete" title="Delete">&#10005;</button>
+                </form>
+              <% } %>
+            </div>
+            <div class="vt-comment-text"><%= comment.text %></div>
+          </div>
+        <% }); %>
+      </div>
+    </div>
+  </div>
+
+  <div class="watch-right">
+    <div class="vt-side-panel">
+      <div class="vt-side-top">
+        <div class="vt-side-labels">
+          <div class="vt-side-row"><span class="vt-side-label">Added:</span> <span><%= new Date(video.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></span></div>
+          <div class="vt-side-row">
+            <span class="vt-side-label">From:</span> <a href="/channel/<%= video.username %>"><%= video.username %></a>
+            <span class="vt-side-subs">(<%= subscriberCount %> subscriber<%= subscriberCount !== 1 ? 's' : '' %>)</span>
+          </div>
+          <% if (currentUser && currentUser.id !== video.user_id) { %>
+            <div class="vt-side-row">
+              <form method="POST" action="/subscribe" class="vt-sub-form">
+                <input type="hidden" name="channel_id" value="<%= video.user_id %>">
+                <input type="hidden" name="return_to" value="/watch?v=<%= video.id %>">
+                <button type="submit" class="vt-subscribe-btn <%= isSubscribed ? 'subscribed' : '' %>">
+                  <%= isSubscribed ? 'Subscribed' : 'Subscribe' %>
+                </button>
+              </form>
+            </div>
+          <% } else if (!currentUser) { %>
+            <div class="vt-side-row">
+              <a href="/login" class="vt-subscribe-btn">Subscribe</a>
+            </div>
+          <% } %>
+        </div>
+      </div>
+      <% if (video.description) { %>
+        <div class="vt-side-desc"><%= video.description %></div>
+      <% } %>
+      <div class="vt-side-row"><span class="vt-side-label">Category:</span> <a href="/category/<%= video.category %>"><%= video.category %></a></div>
+      <% if (video.tags) { %>
+        <div class="vt-side-row">
+          <span class="vt-side-label">Tags:</span>
+          <span class="vt-side-tags">
+            <% video.tags.split(',').forEach(function(tag) { %>
+              <% if (tag.trim()) { %>
+                <a href="/search?q=<%= encodeURIComponent(tag.trim()) %>" class="vt-tag"><%= tag.trim() %></a>
+              <% } %>
+            <% }); %>
+          </span>
+        </div>
+      <% } %>
+      <% if (currentUser && currentUser.id === video.user_id) { %>
+        <form method="POST" action="/delete-video" class="vt-delete-form">
+          <input type="hidden" name="video_id" value="<%= video.id %>">
+          <button type="submit" class="vt-delete-btn" onclick="return confirm('Delete this video?')">Delete Video</button>
+        </form>
+      <% } %>
+    </div>
+
+    <% if (relatedVideos.length > 0) { %>
+      <div class="vt-related">
+        <h3>Related Videos</h3>
+        <% relatedVideos.forEach(function(rv) { %>
+          <div class="vt-related-item">
+            <a href="/watch?v=<%= rv.id %>" class="vt-related-thumb">
+              <% if (rv.thumbnail) { %>
+                <img src="/uploads/thumbnails/<%= rv.thumbnail %>" alt="<%= rv.title %>">
+              <% } else { %>
+                <div class="vt-thumb-placeholder-sm"></div>
+              <% } %>
+            </a>
+            <div class="vt-related-info">
+              <a href="/watch?v=<%= rv.id %>" class="vt-related-title"><%= rv.title %></a>
+              <span class="vt-related-meta"><a href="/channel/<%= rv.username %>"><%= rv.username %></a></span>
+              <span class="vt-related-meta"><%= rv.views.toLocaleString() %> views</span>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
+  </div>
+</div>
+
+<script src="/public/js/player.js"></script>
+
+<%- include('partials/footer') %>

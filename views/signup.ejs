@@ -1,0 +1,26 @@
+<%- include('partials/header') %>
+
+<div class="vt-form-page">
+  <h2>Sign Up for ViewTape</h2>
+  <% if (error) { %>
+    <div class="vt-error"><%= error %></div>
+  <% } %>
+  <form method="POST" action="/signup" class="vt-auth-form">
+    <div class="vt-form-group">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required minlength="3" maxlength="20" autofocus>
+    </div>
+    <div class="vt-form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required minlength="4">
+    </div>
+    <div class="vt-form-group">
+      <label for="confirm_password">Confirm Password</label>
+      <input type="password" id="confirm_password" name="confirm_password" required minlength="4">
+    </div>
+    <button type="submit" class="vt-submit-btn">Create Account</button>
+  </form>
+  <p class="vt-form-footer">Already have an account? <a href="/login">Log In</a></p>
+</div>
+
+<%- include('partials/footer') %>

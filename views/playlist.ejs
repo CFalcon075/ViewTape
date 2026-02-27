@@ -1,0 +1,49 @@
+<%- include('partials/header') %>
+
+<div class="vt-playlist-page">
+  <div class="vt-playlist-header">
+    <h2><% if (playlist.is_quicklist) { %>&#9889; <% } %><%= playlist.name %></h2>
+    <span class="vt-playlist-by">by <a href="/channel/<%= playlist.username %>"><%= playlist.username %></a></span>
+    <% if (playlist.description) { %>
+      <p class="vt-playlist-desc"><%= playlist.description %></p>
+    <% } %>
+    <span class="vt-playlist-count"><%= videos.length %> video<%= videos.length !== 1 ? 's' : '' %></span>
+  </div>
+
+  <% if (videos.length === 0) { %>
+    <div class="vt-empty-playlist">
+      <p>This playlist has no videos yet.</p>
+    </div>
+  <% } else { %>
+    <div class="vt-playlist-videos">
+      <% videos.forEach(function(video, idx) { %>
+        <div class="vt-playlist-video-item">
+          <span class="vt-playlist-video-num"><%= idx + 1 %></span>
+          <a href="/watch?v=<%= video.id %>" class="vt-playlist-video-thumb">
+            <% if (video.thumbnail) { %>
+              <img src="/uploads/thumbnails/<%= video.thumbnail %>" alt="<%= video.title %>">
+            <% } else { %>
+              <div class="vt-thumb-placeholder-sm"></div>
+            <% } %>
+          </a>
+          <div class="vt-playlist-video-info">
+            <a href="/watch?v=<%= video.id %>" class="vt-playlist-video-title"><%= video.title %></a>
+            <span class="vt-playlist-video-meta">
+              <a href="/channel/<%= video.username %>"><%= video.username %></a> &middot; <%= video.views.toLocaleString() %> views
+            </span>
+          </div>
+          <% if (isOwner) { %>
+            <form method="POST" action="/playlist/remove" class="vt-playlist-remove-form">
+              <input type="hidden" name="item_id" value="<%= video.item_id %>">
+              <input type="hidden" name="playlist_id" value="<%= playlist.id %>">
+              <input type="hidden" name="return_to" value="/playlist/<%= playlist.id %>">
+              <button type="submit" class="vt-playlist-remove-btn" title="Remove">&#10005;</button>
+            </form>
+          <% } %>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,30 @@
+<%- include('partials/header') %>
+
+<div class="vt-notifs-page">
+  <h2>Notifications</h2>
+
+  <% if (notifications.length === 0) { %>
+    <div class="vt-empty-notifs">
+      <p>No notifications yet.</p>
+      <p>Subscribe to channels to get notified when they upload new videos!</p>
+    </div>
+  <% } else { %>
+    <div class="vt-notifs-list">
+      <% notifications.forEach(function(notif) { %>
+        <div class="vt-notif-item <%= notif.is_read ? '' : 'unread' %>">
+          <div class="vt-notif-icon">&#128276;</div>
+          <div class="vt-notif-content">
+            <% if (notif.link) { %>
+              <a href="<%= notif.link %>" class="vt-notif-message"><%= notif.message %></a>
+            <% } else { %>
+              <span class="vt-notif-message"><%= notif.message %></span>
+            <% } %>
+            <span class="vt-notif-date"><%= new Date(notif.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit' }) %></span>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

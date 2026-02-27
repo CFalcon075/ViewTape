@@ -1,0 +1,388 @@
+<%- include('partials/header') %>
+
+<div class="vt-form-page vt-settings-page">
+  <h2>Channel Settings</h2>
+  <% if (error) { %>
+    <div class="vt-error"><%= error %></div>
+  <% } %>
+  <% if (success) { %>
+    <div class="vt-success"><%= success %></div>
+  <% } %>
+
+  <form method="POST" action="/channel/<%= channelUser.username %>/settings" enctype="multipart/form-data" class="vt-settings-form">
+
+    <!-- Avatar Preview & Upload -->
+    <div class="vt-settings-section">
+      <h3>Profile Picture</h3>
+      <div class="vt-avatar-preview-row">
+        <% if (channelUser.avatar && channelUser.avatar !== 'pfp1.png' && channelUser.avatar !== 'pfp2.png') { %>
+          <img src="/uploads/avatars/<%= channelUser.avatar %>" alt="Avatar" class="vt-avatar-preview">
+        <% } else { %>
+          <img src="/icons/<%= channelUser.avatar || 'pfp1.png' %>" alt="Avatar" class="vt-avatar-preview">
+        <% } %>
+        <div class="vt-avatar-controls">
+          <div class="vt-form-group">
+            <label for="avatar">Upload new picture</label>
+            <input type="file" id="avatar" name="avatar" accept="image/*">
+            <span class="hint">JPG, PNG, GIF, WebP. Max 10MB.</span>
+          </div>
+          <% if (channelUser.avatar && channelUser.avatar !== 'pfp1.png' && channelUser.avatar !== 'pfp2.png') { %>
+            <form method="POST" action="/channel/<%= channelUser.username %>/reset-avatar" style="display:inline;">
+              <button type="submit" class="vt-reset-btn">Reset to Default</button>
+            </form>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Banner Preview & Upload -->
+    <div class="vt-settings-section">
+      <h3>Channel Banner</h3>
+      <% if (channelUser.banner) { %>
+        <div class="vt-banner-preview-wrap">
+          <img src="/uploads/banners/<%= channelUser.banner %>" alt="Banner" class="vt-banner-preview">
+        </div>
+        <div style="margin-top:6px;">
+          <!-- Nested form not valid; use a separate link/button -->
+        </div>
+      <% } else { %>
+        <div class="vt-banner-placeholder-preview">No banner set</div>
+      <% } %>
+      <div class="vt-form-group" style="margin-top:8px;">
+        <label for="banner">Upload banner image</label>
+        <input type="file" id="banner" name="banner" accept="image/*">
+        <span class="hint">Recommended: 960x200 pixels. JPG, PNG, GIF, WebP.</span>
+      </div>
+    </div>
+
+    <!-- Profile Info -->
+    <div class="vt-settings-section">
+      <h3>Profile Information</h3>
+      <div class="vt-form-group">
+        <label for="display_name">Name</label>
+        <input type="text" id="display_name" name="display_name" value="<%= channelUser.display_name || '' %>" maxlength="50" placeholder="Your display name">
+      </div>
+      <div class="vt-form-group">
+        <label for="age">Age</label>
+        <input type="text" id="age" name="age" value="<%= channelUser.age || '' %>" maxlength="10" placeholder="e.g. 25">
+      </div>
+      <div class="vt-form-group">
+        <label for="website">Website</label>
+        <input type="text" id="website" name="website" value="<%= channelUser.website || '' %>" maxlength="200" placeholder="https://example.com">
+      </div>
+      <div class="vt-form-group">
+        <label for="country">Country</label>
+        <input type="text" id="country" name="country" value="<%= channelUser.country || '' %>" maxlength="50" placeholder="e.g. United States">
+      </div>
+      <div class="vt-form-group">
+        <label for="interests">Interests</label>
+        <textarea id="interests" name="interests" rows="2" maxlength="300" placeholder="e.g. Gaming, Music, Coding..."><%= channelUser.interests || '' %></textarea>
+        <span class="hint">Max 300 characters.</span>
+      </div>
+    </div>
+
+    <!-- Bio -->
+    <div class="vt-settings-section">
+      <h3>About Me</h3>
+      <div class="vt-form-group">
+        <label for="bio">Bio</label>
+        <textarea id="bio" name="bio" rows="4" maxlength="500" placeholder="Tell people about yourself..."><%= channelUser.bio || '' %></textarea>
+        <span class="hint">Max 500 characters.</span>
+      </div>
+    </div>
+
+    <!-- Themes and Colors -->
+    <div class="vt-settings-section">
+      <h3>Themes and Colors</h3>
+      <div class="vt-theme-picker" id="themePicker">
+        <%
+          var currentTheme = channelUser.channel_theme || 'grey';
+          if (!currentTheme || currentTheme === '') currentTheme = 'grey';
+          var customColors = {};
+          try { if (channelUser.custom_colors) customColors = JSON.parse(channelUser.custom_colors); } catch(e) {}
+          var themes = [
+            { id: 'grey', label: 'Grey', bg: '#e8e8e8', accent: '#666', url: '#03c', text: '#333' },
+            { id: 'blue', label: 'Blue', bg: '#d0e4f5', accent: '#1a5276', url: '#03c', text: '#1a3c5e' },
+            { id: 'red', label: 'Red', bg: '#f5d0d0', accent: '#922', url: '#c00', text: '#500' },
+            { id: 'sunlight', label: 'Sunlight', bg: '#fff8dc', accent: '#b8860b', url: '#996600', text: '#554400' },
+            { id: 'forest', label: 'Forest', bg: '#d5ead0', accent: '#2d5a1e', url: '#060', text: '#1a3a10' },
+            { id: '8bit', label: '8-bit', bg: '#222', accent: '#0f0', url: '#0ff', text: '#0f0' },
+            { id: 'princess', label: 'Princess', bg: '#fde0ef', accent: '#d63384', url: '#c0c', text: '#880066' },
+            { id: 'fire', label: 'Fire', bg: '#3a0a0a', accent: '#ff4500', url: '#ff6600', text: '#ff8c00' },
+            { id: 'stealth', label: 'Stealth', bg: '#1a1a2e', accent: '#888', url: '#aaa', text: '#ccc' }
+          ];
+        %>
+        <input type="hidden" name="channel_theme" id="channelThemeInput" value="<%= currentTheme %>">
+        <% themes.forEach(function(t) { %>
+          <div class="vt-theme-option <%= currentTheme === t.id ? 'selected' : '' %>" data-theme="<%= t.id %>">
+            <div class="vt-theme-preview" style="background:<%= t.bg %>; border-color:<%= t.accent %>;">
+              <span style="color:<%= t.url %>; font-size:10px;">url</span>
+              <span style="color:<%= t.accent %>; font-size:10px; font-weight:bold;">A</span>
+              <span style="color:<%= t.url %>; font-size:10px;">url</span><br>
+              <span style="color:<%= t.text %>; font-size:9px;">abc</span>
+              <span style="color:<%= t.accent %>; font-size:9px;">abc</span>
+            </div>
+            <span class="vt-theme-label"><%= t.label %></span>
+          </div>
+        <% }); %>
+        <!-- Custom Theme Option -->
+        <div class="vt-theme-option <%= currentTheme === 'custom' ? 'selected' : '' %>" data-theme="custom">
+          <div class="vt-theme-preview vt-custom-preview" style="background: linear-gradient(135deg, #ff0000, #ff8800, #ffff00, #00ff00, #0088ff, #8800ff); border-color: #333;">
+            <span style="color:#fff; font-size:11px; font-weight:bold; text-shadow:0 0 3px #000;">Custom</span>
+          </div>
+          <span class="vt-theme-label">Custom</span>
+        </div>
+      </div>
+      <span class="hint">Choose a preset theme or create your own custom color scheme.</span>
+      <div style="margin-top:8px;">
+        <button type="button" id="saveThemeBtn" class="vt-submit-btn" style="font-size:13px;padding:5px 16px;">Save Theme</button>
+        <span id="themeSaveStatus" style="margin-left:10px;font-size:12px;"></span>
+      </div>
+
+      <!-- Custom Color Picker Panel -->
+      <div class="vt-custom-colors-panel" id="customColorsPanel" style="<%= currentTheme === 'custom' ? '' : 'display:none;' %>">
+        <h4>Custom Color Picker</h4>
+        <p class="hint" style="margin-bottom:10px;">Pick your own colors for each part of your channel page.</p>
+        <div class="vt-color-grid">
+          <div class="vt-color-row">
+            <label class="vt-color-label" for="cp_page_bg">Page Background</label>
+            <div class="vt-color-input-wrap">
+              <input type="color" id="cp_page_bg" name="custom_page_bg" value="<%= customColors.page_bg || '#ffffff' %>" class="vt-color-input">
+              <input type="text" class="vt-color-hex" value="<%= customColors.page_bg || '#ffffff' %>" data-for="cp_page_bg" maxlength="7">
+            </div>
+          </div>
+          <div class="vt-color-row">
+            <label class="vt-color-label" for="cp_header_bg">Channel Header Background</label>
+            <div class="vt-color-input-wrap">
+              <input type="color" id="cp_header_bg" name="custom_header_bg" value="<%= customColors.header_bg || '#e0e0e0' %>" class="vt-color-input">
+              <input type="text" class="vt-color-hex" value="<%= customColors.header_bg || '#e0e0e0' %>" data-for="cp_header_bg" maxlength="7">
+            </div>
+          </div>
+          <div class="vt-color-row">
+            <label class="vt-color-label" for="cp_header_text">Header Text</label>
+            <div class="vt-color-input-wrap">
+              <input type="color" id="cp_header_text" name="custom_header_text" value="<%= customColors.header_text || '#333333' %>" class="vt-color-input">
+              <input type="text" class="vt-color-hex" value="<%= customColors.header_text || '#333333' %>" data-for="cp_header_text" maxlength="7">
+            </div>
+          </div>
+          <div class="vt-color-row">
+            <label class="vt-color-label" for="cp_box_bg">Profile Box Background</label>
+            <div class="vt-color-input-wrap">
+              <input type="color" id="cp_box_bg" name="custom_box_bg" value="<%= customColors.box_bg || '#ffffff' %>" class="vt-color-input">
+              <input type="text" class="vt-color-hex" value="<%= customColors.box_bg || '#ffffff' %>" data-for="cp_box_bg" maxlength="7">
+            </div>
+          </div>
+          <div class="vt-color-row">
+            <label class="vt-color-label" for="cp_text_color">Text Color</label>
+            <div class="vt-color-input-wrap">
+              <input type="color" id="cp_text_color" name="custom_text_color" value="<%= customColors.text_color || '#333333' %>" class="vt-color-input">
+              <input type="text" class="vt-color-hex" value="<%= customColors.text_color || '#333333' %>" data-for="cp_text_color" maxlength="7">
+            </div>
+          </div>
+          <div class="vt-color-row">
+            <label class="vt-color-label" for="cp_link_color">Link Color</label>
+            <div class="vt-color-input-wrap">
+              <input type="color" id="cp_link_color" name="custom_link_color" value="<%= customColors.link_color || '#0033cc' %>" class="vt-color-input">
+              <input type="text" class="vt-color-hex" value="<%= customColors.link_color || '#0033cc' %>" data-for="cp_link_color" maxlength="7">
+            </div>
+          </div>
+          <div class="vt-color-row">
+            <label class="vt-color-label" for="cp_border_color">Border Color</label>
+            <div class="vt-color-input-wrap">
+              <input type="color" id="cp_border_color" name="custom_border_color" value="<%= customColors.border_color || '#c3c3c3' %>" class="vt-color-input">
+              <input type="text" class="vt-color-hex" value="<%= customColors.border_color || '#c3c3c3' %>" data-for="cp_border_color" maxlength="7">
+            </div>
+          </div>
+        </div>
+        <!-- Live Preview -->
+        <div class="vt-custom-preview-box" id="customPreviewBox">
+          <div class="vt-cp-header" id="cpPreviewHeader">
+            <strong id="cpPreviewHeaderText">Channel Name</strong>
+          </div>
+          <div class="vt-cp-body" id="cpPreviewBody">
+            <span id="cpPreviewText">Sample text</span> &middot;
+            <a href="#" id="cpPreviewLink" onclick="return false;">Sample link</a>
+          </div>
+        </div>
+      </div>
+
+      <script>
+      (function() {
+        var picker = document.getElementById('themePicker');
+        var panel = document.getElementById('customColorsPanel');
+        var themeInput = document.getElementById('channelThemeInput');
+        if (!picker || !themeInput) return;
+        var options = picker.querySelectorAll('.vt-theme-option');
+
+        function updatePanel() {
+          if (panel) panel.style.display = (themeInput.value === 'custom') ? '' : 'none';
+        }
+
+        options.forEach(function(opt) {
+          opt.addEventListener('click', function() {
+            options.forEach(function(o) { o.classList.remove('selected'); });
+            this.classList.add('selected');
+            var theme = this.getAttribute('data-theme');
+            themeInput.value = theme;
+            updatePanel();
+          });
+        });
+
+        // Save Theme button - uses AJAX, completely independent of the main form
+        var saveThemeBtn = document.getElementById('saveThemeBtn');
+        var themeSaveStatus = document.getElementById('themeSaveStatus');
+        if (saveThemeBtn) {
+          saveThemeBtn.addEventListener('click', function() {
+            var selectedTheme = themeInput.value;
+            var body = { theme: selectedTheme };
+            if (selectedTheme === 'custom') {
+              body.customColors = {
+                page_bg: document.getElementById('cp_page_bg').value,
+                header_bg: document.getElementById('cp_header_bg').value,
+                header_text: document.getElementById('cp_header_text').value,
+                box_bg: document.getElementById('cp_box_bg').value,
+                text_color: document.getElementById('cp_text_color').value,
+                link_color: document.getElementById('cp_link_color').value,
+                border_color: document.getElementById('cp_border_color').value
+              };
+            }
+            themeSaveStatus.textContent = 'Saving...';
+            themeSaveStatus.style.color = '#666';
+            fetch('/channel/<%= channelUser.username %>/save-theme', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(body)
+            }).then(function(r) { return r.json(); }).then(function(data) {
+              if (data.success) {
+                themeSaveStatus.textContent = 'Theme saved! (' + data.theme + ')';
+                themeSaveStatus.style.color = 'green';
+              } else {
+                themeSaveStatus.textContent = 'Error: ' + (data.error || 'unknown');
+                themeSaveStatus.style.color = 'red';
+              }
+            }).catch(function(err) {
+              themeSaveStatus.textContent = 'Failed to save: ' + err.message;
+              themeSaveStatus.style.color = 'red';
+            });
+          });
+        }
+
+        // Sync color inputs with hex text fields + live preview
+        var colorInputs = document.querySelectorAll('.vt-color-input');
+        var hexInputs = document.querySelectorAll('.vt-color-hex');
+
+        function updatePreview() {
+          var pb = document.getElementById('cp_page_bg');
+          var hb = document.getElementById('cp_header_bg');
+          var ht = document.getElementById('cp_header_text');
+          var bb = document.getElementById('cp_box_bg');
+          var tc = document.getElementById('cp_text_color');
+          var lc = document.getElementById('cp_link_color');
+          var bc = document.getElementById('cp_border_color');
+          var previewBox = document.getElementById('customPreviewBox');
+          var previewHeader = document.getElementById('cpPreviewHeader');
+          var previewHeaderText = document.getElementById('cpPreviewHeaderText');
+          var previewBody = document.getElementById('cpPreviewBody');
+          var previewText = document.getElementById('cpPreviewText');
+          var previewLink = document.getElementById('cpPreviewLink');
+          if (previewBox) previewBox.style.borderColor = bc.value;
+          if (previewHeader) { previewHeader.style.background = hb.value; previewHeader.style.borderColor = bc.value; }
+          if (previewHeaderText) previewHeaderText.style.color = ht.value;
+          if (previewBody) { previewBody.style.background = bb.value; }
+          if (previewText) previewText.style.color = tc.value;
+          if (previewLink) previewLink.style.color = lc.value;
+        }
+
+        colorInputs.forEach(function(ci) {
+          ci.addEventListener('input', function() {
+            var hex = document.querySelector('.vt-color-hex[data-for="' + ci.id + '"]');
+            if (hex) hex.value = ci.value;
+            updatePreview();
+          });
+        });
+
+        hexInputs.forEach(function(hi) {
+          hi.addEventListener('input', function() {
+            var val = hi.value.trim();
+            if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+              var ci = document.getElementById(hi.getAttribute('data-for'));
+              if (ci) ci.value = val;
+              updatePreview();
+            }
+          });
+        });
+
+        updatePreview();
+      })();
+      </script>
+    </div>
+
+    <!-- Snow Animation -->
+    <div class="vt-settings-section">
+      <h3>Channel Effects</h3>
+      <div class="vt-form-group vt-checkbox-group">
+        <label class="vt-checkbox-label">
+          <input type="checkbox" name="snow_enabled" <% if (channelUser.snow_enabled) { %>checked<% } %>>
+          Enable falling snow animation on my channel page
+        </label>
+        <span class="hint">Classic YouTube holiday effect! Visitors to your channel will see snowflakes falling.</span>
+      </div>
+    </div>
+
+    <button type="submit" class="vt-submit-btn">Save Settings</button>
+  </form>
+
+  <% if (channelUser.banner) { %>
+    <form method="POST" action="/channel/<%= channelUser.username %>/remove-banner" style="margin-top:10px;">
+      <button type="submit" class="vt-reset-btn">Remove Banner</button>
+    </form>
+  <% } %>
+
+  <!-- Two-Factor Authentication -->
+  <div class="vt-settings-section" style="margin-top:20px;">
+    <h3>Account Security - Two-Factor Authentication (2FA)</h3>
+    <% if (channelUser.totp_secret) { %>
+      <div style="background:#dfd;border:1px solid #090;color:#060;padding:10px 14px;border-radius:4px;margin-bottom:10px;font-size:13px;">
+        <strong>2FA is ENABLED</strong> on your account. Your account is protected with an authenticator app.
+      </div>
+      <% var twofaParam = typeof require !== 'undefined' ? '' : ''; %>
+      <p style="font-size:12px;color:#555;margin-bottom:8px;">To disable 2FA, enter your current 6-digit code:</p>
+      <form method="POST" action="/account/2fa/disable" style="display:flex;gap:8px;align-items:center;">
+        <input type="text" name="totp_code" placeholder="6-digit code" maxlength="6" autocomplete="off" style="width:120px;font-size:14px;letter-spacing:2px;text-align:center;padding:4px 8px;border:1px solid #ccc;border-radius:3px;">
+        <button type="submit" class="vt-reset-btn" onclick="return confirm('Are you sure you want to disable 2FA?')">Disable 2FA</button>
+      </form>
+    <% } else { %>
+      <div style="background:#f9f9f9;border:1px solid #ddd;padding:10px 14px;border-radius:4px;margin-bottom:10px;font-size:13px;">
+        <strong>2FA is not enabled.</strong> Add an extra layer of security to your account with an authenticator app.
+      </div>
+      <a href="/account/2fa/setup" class="vt-submit-btn" style="display:inline-block;text-decoration:none;font-size:13px;padding:6px 16px;">Set Up 2FA</a>
+    <% } %>
+  </div>
+
+  <script>
+  (function() {
+    var params = new URLSearchParams(window.location.search);
+    var twofa = params.get('twofa');
+    if (twofa === 'enabled') {
+      var msg = document.createElement('div');
+      msg.style.cssText = 'background:#dfd;border:1px solid #090;color:#060;padding:8px 14px;border-radius:4px;margin:10px 0;font-size:13px;';
+      msg.textContent = '2FA has been enabled successfully!';
+      document.querySelector('.vt-settings-section:last-of-type').prepend(msg);
+    } else if (twofa === 'disabled') {
+      var msg = document.createElement('div');
+      msg.style.cssText = 'background:#ffd;border:1px solid #cc0;color:#660;padding:8px 14px;border-radius:4px;margin:10px 0;font-size:13px;';
+      msg.textContent = '2FA has been disabled.';
+      document.querySelector('.vt-settings-section:last-of-type').prepend(msg);
+    } else if (twofa === 'invalid') {
+      var msg = document.createElement('div');
+      msg.style.cssText = 'background:#fdd;border:1px solid #c00;color:#900;padding:8px 14px;border-radius:4px;margin:10px 0;font-size:13px;';
+      msg.textContent = 'Invalid 2FA code. Please try again.';
+      document.querySelector('.vt-settings-section:last-of-type').prepend(msg);
+    }
+  })();
+  </script>
+
+  <p class="vt-form-footer"><a href="/channel/<%= channelUser.username %>">Back to Channel</a></p>
+</div>
+
+<%- include('partials/footer') %>

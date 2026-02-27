@@ -1,0 +1,33 @@
+<%- include('partials/header') %>
+
+<div class="vt-category-page">
+  <h2><%= category %></h2>
+  <% if (videos.length === 0) { %>
+    <p class="vt-no-results">No videos in this category yet.</p>
+  <% } else { %>
+    <div class="vt-video-grid">
+      <% videos.forEach(function(video) { %>
+        <div class="vt-video-thumb">
+          <a href="/watch?v=<%= video.id %>">
+            <div class="vt-thumb-img-wrap">
+              <% if (video.thumbnail) { %>
+                <img src="/uploads/thumbnails/<%= video.thumbnail %>" alt="<%= video.title %>">
+              <% } else { %>
+                <div class="vt-thumb-placeholder"></div>
+              <% } %>
+            </div>
+          </a>
+          <div class="vt-thumb-info">
+            <a href="/watch?v=<%= video.id %>" class="vt-thumb-title"><%= video.title %></a>
+            <div class="vt-thumb-meta">
+              <a href="/channel/<%= video.username %>" class="vt-thumb-author"><%= video.username %></a>
+              <span class="vt-thumb-views"><%= video.views.toLocaleString() %> views</span>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,43 @@
+<%- include('partials/header') %>
+
+<div class="vt-form-page vt-upload-page">
+  <h2>Upload Video</h2>
+  <% if (error) { %>
+    <div class="vt-error"><%= error %></div>
+  <% } %>
+  <form method="POST" action="/upload" enctype="multipart/form-data" class="vt-upload-form">
+    <div class="vt-form-group">
+      <label for="title">Title <span class="required">*</span></label>
+      <input type="text" id="title" name="title" required maxlength="100" placeholder="Enter video title">
+    </div>
+    <div class="vt-form-group">
+      <label for="description">Description</label>
+      <textarea id="description" name="description" rows="4" placeholder="Describe your video..."></textarea>
+    </div>
+    <div class="vt-form-group">
+      <label for="category">Category</label>
+      <select id="category" name="category">
+        <% categories.forEach(function(cat) { %>
+          <option value="<%= cat %>"><%= cat %></option>
+        <% }); %>
+      </select>
+    </div>
+    <div class="vt-form-group">
+      <label for="tags">Tags <span class="hint">(comma-separated)</span></label>
+      <input type="text" id="tags" name="tags" placeholder="funny, music, vlog">
+    </div>
+    <div class="vt-form-group">
+      <label for="video">Video File <span class="required">*</span></label>
+      <input type="file" id="video" name="video" accept="video/*" required>
+      <span class="hint">Max 5GB. Formats: MP4, WebM, OGG, MOV, AVI, MKV</span>
+    </div>
+    <div class="vt-form-group">
+      <label for="thumbnail">Thumbnail <span class="hint">(optional)</span></label>
+      <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
+      <span class="hint">JPG, PNG, GIF, WebP. If not provided, one will be auto-generated.</span>
+    </div>
+    <button type="submit" class="vt-submit-btn">Upload Video</button>
+  </form>
+</div>
+
+<%- include('partials/footer') %>

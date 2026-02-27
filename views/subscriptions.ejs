@@ -1,0 +1,38 @@
+<%- include('partials/header') %>
+
+<div class="vt-subs-page">
+  <h2>My Subscriptions</h2>
+  <p class="vt-subs-count">You are subscribed to <strong><%= channels.length %></strong> channel<%= channels.length !== 1 ? 's' : '' %>.</p>
+
+  <% if (channels.length === 0) { %>
+    <div class="vt-empty-subs">
+      <p>You haven't subscribed to any channels yet.</p>
+      <p>Subscribe to channels to see them listed here!</p>
+    </div>
+  <% } else { %>
+    <div class="vt-sub-channels-list">
+      <% channels.forEach(function(ch) { %>
+        <div class="vt-sub-channel-item">
+          <a href="/channel/<%= ch.username %>" class="vt-sub-channel-avatar-link">
+            <% if (ch.avatar && ch.avatar !== 'pfp1.png' && ch.avatar !== 'pfp2.png') { %>
+              <img src="/uploads/avatars/<%= ch.avatar %>" alt="" class="vt-sub-channel-avatar">
+            <% } else { %>
+              <img src="/icons/<%= ch.avatar || 'pfp1.png' %>" alt="" class="vt-sub-channel-avatar">
+            <% } %>
+          </a>
+          <div class="vt-sub-channel-info">
+            <a href="/channel/<%= ch.username %>" class="vt-sub-channel-name"><%= ch.username %></a>
+            <span class="vt-sub-channel-subs"><%= ch.subscriber_count %> subscriber<%= ch.subscriber_count !== 1 ? 's' : '' %></span>
+          </div>
+          <form method="POST" action="/subscribe" class="vt-sub-form">
+            <input type="hidden" name="channel_id" value="<%= ch.id %>">
+            <input type="hidden" name="return_to" value="/subscriptions">
+            <button type="submit" class="vt-subscribe-btn subscribed">Subscribed</button>
+          </form>
+        </div>
+      <% }); %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('partials/footer') %>

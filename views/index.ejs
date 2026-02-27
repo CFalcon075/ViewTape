@@ -1,0 +1,92 @@
+<%- include('partials/header') %>
+
+<% if (recentVideos.length === 0 && popularVideos.length === 0) { %>
+  <div class="vt-empty-home">
+    <h2>Welcome to ViewTape!</h2>
+    <p>No videos have been uploaded yet. Be the first!</p>
+    <% if (currentUser) { %>
+      <a href="/upload" class="vt-btn-upload">Upload a Video</a>
+    <% } else { %>
+      <a href="/signup" class="vt-btn-upload">Sign Up to Upload</a>
+    <% } %>
+  </div>
+<% } else { %>
+
+  <% if (popularVideos.length > 0) { %>
+  <div class="vt-section">
+    <h2 class="vt-section-title">Most Viewed</h2>
+    <div class="vt-video-grid">
+      <% popularVideos.forEach(function(video) { %>
+        <div class="vt-video-thumb">
+          <a href="/watch?v=<%= video.id %>">
+            <div class="vt-thumb-img-wrap">
+              <% if (video.thumbnail) { %>
+                <img src="/uploads/thumbnails/<%= video.thumbnail %>" alt="<%= video.title %>">
+              <% } else { %>
+                <div class="vt-thumb-placeholder"></div>
+              <% } %>
+              <% if (video.duration) { %>
+                <span class="vt-thumb-duration"><%= Math.floor(video.duration / 60) %>:<%= ('0' + Math.floor(video.duration % 60)).slice(-2) %></span>
+              <% } %>
+              <% if (currentUser) { %>
+                <span class="vt-ql-icon" data-vid="<%= video.id %>" title="Add to QuickList"></span>
+              <% } %>
+            </div>
+          </a>
+          <div class="vt-thumb-info">
+            <a href="/watch?v=<%= video.id %>" class="vt-thumb-title"><%= video.title %></a>
+            <div class="vt-thumb-meta">
+              <a href="/channel/<%= video.username %>" class="vt-thumb-author"><%= video.username %></a>
+              <span class="vt-thumb-views"><%= video.views.toLocaleString() %> views</span>
+              <% if (video.avg_rating > 0) { %>
+                <span class="vt-thumb-stars">
+                  <% for (let i = 1; i <= 5; i++) { %>
+                    <% if (i <= Math.round(video.avg_rating)) { %>&#9733;<% } else { %>&#9734;<% } %>
+                  <% } %>
+                </span>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+  <% } %>
+
+  <% if (recentVideos.length > 0) { %>
+  <div class="vt-section">
+    <h2 class="vt-section-title">Most Recent</h2>
+    <div class="vt-video-grid">
+      <% recentVideos.forEach(function(video) { %>
+        <div class="vt-video-thumb">
+          <a href="/watch?v=<%= video.id %>">
+            <div class="vt-thumb-img-wrap">
+              <% if (video.thumbnail) { %>
+                <img src="/uploads/thumbnails/<%= video.thumbnail %>" alt="<%= video.title %>">
+              <% } else { %>
+                <div class="vt-thumb-placeholder"></div>
+              <% } %>
+              <% if (video.duration) { %>
+                <span class="vt-thumb-duration"><%= Math.floor(video.duration / 60) %>:<%= ('0' + Math.floor(video.duration % 60)).slice(-2) %></span>
+              <% } %>
+              <% if (currentUser) { %>
+                <span class="vt-ql-icon" data-vid="<%= video.id %>" title="Add to QuickList"></span>
+              <% } %>
+            </div>
+          </a>
+          <div class="vt-thumb-info">
+            <a href="/watch?v=<%= video.id %>" class="vt-thumb-title"><%= video.title %></a>
+            <div class="vt-thumb-meta">
+              <a href="/channel/<%= video.username %>" class="vt-thumb-author"><%= video.username %></a>
+              <span class="vt-thumb-views"><%= video.views.toLocaleString() %> views</span>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
+  </div>
+  <% } %>
+
+<% } %>
+
+<%- include('partials/footer') %>

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= typeof title !== 'undefined' ? title : 'ViewTape' %></title>
+  <link rel="icon" href="/icons/favicon.ico">
+  <link rel="stylesheet" href="/public/css/style.css">
+</head>
+<body>
+  <div class="vt-header-wrap">
+    <div class="vt-header-top">
+      <div class="vt-logo-area">
+        <a href="/"><img class="vt-logo" src="/icons/viewtapelogo.png" alt="ViewTape"></a>
+        <span class="vt-tagline">Share Ep0k Stuff!</span>
+      </div>
+      <div class="vt-header-links">
+        <% if (currentUser) { %>
+          <a href="/channel/<%= currentUser.username %>"><img class="vt-header-avatar" src="<% if (currentUser.avatar && currentUser.avatar !== 'pfp1.png' && currentUser.avatar !== 'pfp2.png') { %>/uploads/avatars/<%= currentUser.avatar %><% } else { %>/icons/<%= currentUser.avatar %><% } %>" alt=""> <%= currentUser.username %></a> |
+          <a href="/subscriptions">Subscriptions</a> |
+          <a href="/notifications" class="vt-notif-link">Notifications<% if (unreadNotifications > 0) { %><span class="vt-notif-badge"><%= unreadNotifications %></span><% } %></a> |
+          <a href="/upload">Upload</a> |
+          <a href="/logout">Log Out</a>
+        <% } else { %>
+          <a href="/signup">Sign Up</a> |
+          <a href="/login">Log In</a>
+        <% } %>
+      </div>
+    </div>
+    <div class="vt-tabs">
+      <a href="/" class="vt-tab">Videos</a>
+      <a href="/categories" class="vt-tab">Categories</a>
+      <a href="/channels" class="vt-tab">Channels</a>
+      <% if (currentUser) { %>
+        <a href="/subscriptions" class="vt-tab">Subscriptions</a>
+        <a href="/playlists" class="vt-tab">Playlists</a>
+      <% } %>
+    </div>
+    <div class="vt-searchbar">
+      <form class="vt-search-inner" action="/search" method="GET">
+        <input class="vt-search-input" type="text" name="q" placeholder="Search videos..." value="<%= typeof query !== 'undefined' ? query : '' %>">
+        <button class="vt-search-btn" type="submit">Search</button>
+      </form>
+    </div>
+  </div>
+  <div class="vt-page">

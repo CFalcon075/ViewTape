@@ -1,0 +1,44 @@
+<%- include('partials/header') %>
+
+<div class="vt-form-page" style="max-width:500px;">
+  <h2>Two-Factor Authentication Setup</h2>
+
+  <% if (alreadyEnabled) { %>
+    <div class="vt-success" style="background:#dfd;border:1px solid #090;color:#060;padding:8px 12px;border-radius:4px;margin-bottom:14px;">
+      2FA is already enabled on your account. Setting up again will replace your current 2FA.
+    </div>
+  <% } %>
+
+  <div style="background:#f9f9f9;border:1px solid #ddd;border-radius:6px;padding:16px;margin-bottom:16px;">
+    <h3 style="font-size:14px;margin:0 0 10px 0;">Step 1: Scan QR Code</h3>
+    <p style="font-size:12px;color:#555;margin-bottom:10px;">Open your authenticator app (Google Authenticator, Authy, etc.) and scan this QR code:</p>
+    <div style="text-align:center;margin-bottom:12px;">
+      <% if (qrDataUrl) { %>
+        <img src="<%= qrDataUrl %>" alt="2FA QR Code" style="border:2px solid #ccc;border-radius:6px;">
+      <% } else { %>
+        <p style="color:#c00;">Could not generate QR code.</p>
+      <% } %>
+    </div>
+    <p style="font-size:11px;color:#888;text-align:center;">
+      Can't scan? Enter this key manually: <br>
+      <code style="background:#eee;padding:3px 8px;border-radius:3px;font-size:13px;letter-spacing:1px;user-select:all;"><%= secret %></code>
+    </p>
+  </div>
+
+  <div style="background:#f9f9f9;border:1px solid #ddd;border-radius:6px;padding:16px;">
+    <h3 style="font-size:14px;margin:0 0 10px 0;">Step 2: Verify Code</h3>
+    <p style="font-size:12px;color:#555;margin-bottom:10px;">Enter the 6-digit code from your authenticator app to confirm setup:</p>
+    <form method="POST" action="/account/2fa/setup" class="vt-auth-form">
+      <div class="vt-form-group" style="margin-bottom:10px;">
+        <input type="text" name="totp_code" placeholder="Enter 6-digit code..." maxlength="6" autocomplete="off" required style="font-size:18px;letter-spacing:4px;text-align:center;width:200px;">
+      </div>
+      <button type="submit" class="vt-submit-btn">Enable 2FA</button>
+    </form>
+  </div>
+
+  <p class="vt-form-footer" style="margin-top:14px;">
+    <a href="/channel/<%= currentUser.username %>/settings">Back to Channel Settings</a>
+  </p>
+</div>
+
+<%- include('partials/footer') %>

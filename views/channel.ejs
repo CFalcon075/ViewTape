@@ -1,0 +1,324 @@
+<%- include('partials/header') %>
+
+<%
+  var theme = channelUser.channel_theme || 'grey';
+  function timeAgo(dateStr) {
+    var now = new Date();
+    var then = new Date(dateStr);
+    var diff = Math.floor((now - then) / 1000);
+    if (diff < 60) return 'just now';
+    if (diff < 3600) return Math.floor(diff / 60) + ' minute' + (Math.floor(diff / 60) !== 1 ? 's' : '') + ' ago';
+    if (diff < 86400) return Math.floor(diff / 3600) + ' hour' + (Math.floor(diff / 3600) !== 1 ? 's' : '') + ' ago';
+    if (diff < 2592000) return Math.floor(diff / 86400) + ' day' + (Math.floor(diff / 86400) !== 1 ? 's' : '') + ' ago';
+    if (diff < 31536000) return Math.floor(diff / 2592000) + ' month' + (Math.floor(diff / 2592000) !== 1 ? 's' : '') + ' ago';
+    return Math.floor(diff / 31536000) + ' year' + (Math.floor(diff / 31536000) !== 1 ? 's' : '') + ' ago';
+  }
+%>
+
+<div class="vt-channel-page vt-theme-<%= theme %>">
+  <!-- Channel Banner -->
+  <% if (channelUser.banner) { %>
+    <div class="vt-channel-banner">
+      <img src="/uploads/banners/<%= channelUser.banner %>" alt="Channel Banner">
+    </div>
+  <% } %>
+
+  <div class="vt-channel-header">
+    <% if (channelUser.avatar && channelUser.avatar !== 'pfp1.png' && channelUser.avatar !== 'pfp2.png') { %>
+      <img src="/uploads/avatars/<%= channelUser.avatar %>" alt="" class="vt-channel-avatar">
+    <% } else { %>
+      <img src="/icons/<%= channelUser.avatar || 'pfp1.png' %>" alt="" class="vt-channel-avatar">
+    <% } %>
+    <div class="vt-channel-info">
+      <h2><%= channelUser.username %></h2>
+      <p class="vt-channel-tagline">Your channel viewers will see links here, including "subscribe" and "add as friend".</p>
+      <% if (currentUser && currentUser.id !== channelUser.id) { %>
+        <form method="POST" action="/subscribe" class="vt-sub-form">
+          <input type="hidden" name="channel_id" value="<%= channelUser.id %>">
+          <input type="hidden" name="return_to" value="/channel/<%= channelUser.username %>">
+          <button type="submit" class="vt-subscribe-btn <%= isSubscribed ? 'subscribed' : '' %>">
+            <%= isSubscribed ? 'Subscribed' : 'Subscribe' %>
+          </button>
+        </form>
+      <% } else if (!currentUser) { %>
+        <a href="/login" class="vt-subscribe-btn">Subscribe</a>
+      <% } %>
+    </div>
+  </div>
+
+  <div class="vt-channel-body">
+    <!-- Left Column: Profile + Activity -->
+    <div class="vt-channel-left">
+      <!-- Profile Info Table (BitView style) -->
+      <div class="vt-profile-box">
+        <div class="vt-profile-box-header">
+          <span>Profile</span>
+          <% if (currentUser && currentUser.id === channelUser.id) { %>
+            <a href="/channel/<%= channelUser.username %>/settings" class="vt-profile-edit">edit</a>
+          <% } %>
+        </div>
+        <table class="vt-profile-table">
+          <% if (channelUser.display_name) { %>
+            <tr><td class="vt-pt-label">Name:</td><td class="vt-pt-value"><%= channelUser.display_name %></td></tr>
+          <% } %>
+          <tr><td class="vt-pt-label">Channel Views:</td><td class="vt-pt-value"><%= channelViews.toLocaleString() %></td></tr>
+          <tr><td class="vt-pt-label">Total Upload Views:</td><td class="vt-pt-value"><%= channelViews.toLocaleString() %></td></tr>
+          <tr><td class="vt-pt-label">Videos Watched:</td><td class="vt-pt-value"><%= (channelUser.videos_watched || 0).toLocaleString() %></td></tr>
+          <% if (channelUser.age) { %>
+            <tr><td class="vt-pt-label">Age:</td><td class="vt-pt-value"><%= channelUser.age %></td></tr>
+          <% } %>
+          <tr><td class="vt-pt-label">Joined:</td><td class="vt-pt-value"><%= new Date(channelUser.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></td></tr>
+          <% if (channelUser.last_sign_in) { %>
+            <tr><td class="vt-pt-label">Last Sign In:</td><td class="vt-pt-value"><%= timeAgo(channelUser.last_sign_in) %></td></tr>
+          <% } %>
+          <tr><td class="vt-pt-label">Subscribers:</td><td class="vt-pt-value"><%= subscriberCount %></td></tr>
+          <% if (channelUser.website) { %>
+            <tr><td class="vt-pt-label">Website:</td><td class="vt-pt-value"><a href="<%= channelUser.website %>" target="_blank" rel="nofollow"><%= channelUser.website.length > 30 ? channelUser.website.substring(0, 30) + '...' : channelUser.website %></a></td></tr>
+          <% } %>
+          <% if (channelUser.country) { %>
+            <tr><td class="vt-pt-label">Country:</td><td class="vt-pt-value"><%= channelUser.country %></td></tr>
+          <% } %>
+          <% if (channelUser.interests) { %>
+            <tr><td class="vt-pt-label" colspan="2"><strong>Interests:</strong><br><%= channelUser.interests %></td></tr>
+          <% } %>
+        </table>
+      </div>
+
+      <% if (channelUser.bio) { %>
+        <div class="vt-profile-box">
+          <div class="vt-profile-box-header"><span>About Me</span></div>
+          <div class="vt-profile-box-body"><%= channelUser.bio %></div>
+        </div>
+      <% } %>
+
+      <!-- Recent Activity -->
+      <div class="vt-profile-box">
+        <div class="vt-profile-box-header"><span>Recent Activity</span></div>
+        <div class="vt-activity-feed">
+          <% if (recentActivity.length === 0) { %>
+            <p class="vt-activity-empty">No recent activity.</p>
+          <% } else { %>
+            <% recentActivity.forEach(function(act) { %>
+              <div class="vt-activity-item">
+                <div class="vt-activity-text">
+                  <strong><%= channelUser.username %></strong>
+                  <% if (act.action_type === 'liked') { %>
+                    liked a video
+                  <% } else if (act.action_type === 'rated') { %>
+                    rated a video
+                  <% } else if (act.action_type === 'subscribed') { %>
+                    subscribed to <a href="/channel/<%= act.target_user %>"><strong><%= act.target_user %></strong></a>
+                  <% } else if (act.action_type === 'favorited') { %>
+                    favorited a video
+                  <% } else { %>
+                    did something
+                  <% } %>
+                  <span class="vt-activity-time">(<%= timeAgo(act.created_at) %>)</span>
+                </div>
+                <% if (act.action_type !== 'subscribed' && act.target_id) { %>
+                  <div class="vt-activity-video">
+                    <a href="/watch?v=<%= act.target_id %>" class="vt-activity-thumb">
+                      <% if (act.target_thumb) { %>
+                        <img src="/uploads/thumbnails/<%= act.target_thumb %>" alt="">
+                      <% } %>
+                    </a>
+                    <div class="vt-activity-video-info">
+                      <a href="/watch?v=<%= act.target_id %>"><%= act.target_title %></a>
+                    </div>
+                  </div>
+                <% } %>
+              </div>
+            <% }); %>
+          <% } %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Videos + Playlists -->
+    <div class="vt-channel-right">
+      <% if (currentUser && currentUser.id === channelUser.id) { %>
+        <a href="/channel/<%= channelUser.username %>/settings" class="vt-settings-link">Channel Settings</a>
+      <% } %>
+
+      <% if (userPlaylists.length > 0) { %>
+        <div class="vt-profile-box">
+          <div class="vt-profile-box-header"><span>Playlists</span></div>
+          <div class="vt-profile-box-body">
+            <% userPlaylists.forEach(function(pl) { %>
+              <div class="vt-channel-playlist-item">
+                <a href="/playlist/<%= pl.id %>"><%= pl.name %></a>
+                <span class="vt-channel-playlist-meta">(<%= pl.video_count %> video<%= pl.video_count !== 1 ? 's' : '' %>)</span>
+              </div>
+            <% }); %>
+          </div>
+        </div>
+      <% } %>
+
+      <h3 class="vt-channel-videos-title"><%= channelUser.username %>'s Videos (<%= videos.length %>)</h3>
+      <% if (videos.length === 0) { %>
+        <div class="vt-empty-channel">
+          <p>This channel has no videos yet.</p>
+        </div>
+      <% } else { %>
+        <div class="vt-video-grid">
+          <% videos.forEach(function(video) { %>
+            <div class="vt-video-thumb">
+              <a href="/watch?v=<%= video.id %>">
+                <div class="vt-thumb-img-wrap">
+                  <% if (video.thumbnail) { %>
+                    <img src="/uploads/thumbnails/<%= video.thumbnail %>" alt="<%= video.title %>">
+                  <% } else { %>
+                    <div class="vt-thumb-placeholder"></div>
+                  <% } %>
+                  <% if (video.duration) { %>
+                    <span class="vt-thumb-duration"><%= Math.floor(video.duration / 60) %>:<%= ('0' + Math.floor(video.duration % 60)).slice(-2) %></span>
+                  <% } %>
+                </div>
+              </a>
+              <div class="vt-thumb-info">
+                <a href="/watch?v=<%= video.id %>" class="vt-thumb-title"><%= video.title %></a>
+                <div class="vt-thumb-meta">
+                  <span class="vt-thumb-views"><%= video.views.toLocaleString() %> views</span>
+                </div>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } %>
+    </div>
+  </div>
+</div>
+
+<!-- Snow Animation -->
+<% if (channelUser.snow_enabled) { %>
+<div class="vt-snow-container" id="snowContainer"></div>
+<script>
+(function() {
+  var container = document.getElementById('snowContainer');
+  if (!container) return;
+  var flakeCount = 80;
+  for (var i = 0; i < flakeCount; i++) {
+    var flake = document.createElement('div');
+    flake.className = 'vt-snowflake';
+    var size = 2 + Math.random() * 5;
+    flake.style.width = size + 'px';
+    flake.style.height = size + 'px';
+    flake.style.left = Math.random() * 100 + '%';
+    // Speed variation: some fast (2s), some slow (10s)
+    var speed = 2 + Math.random() * 8;
+    flake.style.animationDuration = speed + 's';
+    flake.style.animationDelay = (Math.random() * 6) + 's';
+    flake.style.opacity = (0.5 + Math.random() * 0.5);
+    container.appendChild(flake);
+  }
+})();
+</script>
+<% } %>
+
+<%
+  var customColors = {};
+  try { if (channelUser.custom_colors) customColors = JSON.parse(channelUser.custom_colors); } catch(e) {}
+%>
+<% if (theme !== 'grey') { %>
+<script>
+(function() {
+  var themeColors = {
+    'blue': '#d0e4f5', 'red': '#f5d0d0', 'sunlight': '#fff8dc', 'forest': '#d5ead0',
+    '8bit': '#111', 'princess': '#fde0ef', 'fire': '#c00', 'stealth': '#1a1a2e'
+  };
+  var isCustom = '<%= theme %>' === 'custom';
+  var bg = isCustom ? '<%= customColors.page_bg || "#ffffff" %>' : themeColors['<%= theme %>'];
+  if (bg) {
+    var vtPage = document.querySelector('.vt-page');
+    if (vtPage) {
+      vtPage.style.background = bg;
+      vtPage.style.maxWidth = 'none';
+      vtPage.style.padding = '0';
+      vtPage.style.minHeight = '100vh';
+    }
+    var header = document.querySelector('.vt-header-wrap');
+    if (header) header.style.background = '#fff';
+    var footer = document.querySelector('.vt-footer');
+    if (footer) {
+      footer.style.background = bg;
+      footer.style.maxWidth = 'none';
+      footer.style.borderTopColor = 'transparent';
+      var darkThemes = ['8bit','fire','stealth'];
+      if (darkThemes.indexOf('<%= theme %>') !== -1) {
+        footer.style.color = '<%= theme === "fire" ? "#ff0" : theme === "8bit" ? "#0f0" : "#888" %>';
+        footer.querySelectorAll('a').forEach(function(a) {
+          a.style.color = '<%= theme === "fire" ? "#ff0" : theme === "8bit" ? "#0ff" : "#8888cc" %>';
+        });
+      }
+      if (isCustom) {
+        footer.style.color = '<%= customColors.text_color || "#333333" %>';
+        footer.querySelectorAll('a').forEach(function(a) {
+          a.style.color = '<%= customColors.link_color || "#0033cc" %>';
+        });
+      }
+    }
+  }
+  // Apply custom colors to channel page elements
+  if (isCustom) {
+    var cp = document.querySelector('.vt-channel-page');
+    if (cp) {
+      // Channel header
+      var ch = cp.querySelector('.vt-channel-header');
+      if (ch) {
+        ch.style.background = '<%= customColors.header_bg || "#e0e0e0" %>';
+        ch.style.border = '2px solid <%= customColors.border_color || "#c3c3c3" %>';
+      }
+      var chH2 = cp.querySelector('.vt-channel-header h2');
+      if (chH2) chH2.style.color = '<%= customColors.header_text || "#333333" %>';
+      var chTag = cp.querySelector('.vt-channel-tagline');
+      if (chTag) chTag.style.color = '<%= customColors.header_text || "#333333" %>';
+      // Profile boxes
+      cp.querySelectorAll('.vt-profile-box').forEach(function(box) {
+        box.style.borderColor = '<%= customColors.border_color || "#c3c3c3" %>';
+        box.style.background = '<%= customColors.box_bg || "#ffffff" %>';
+      });
+      cp.querySelectorAll('.vt-profile-box-header').forEach(function(h) {
+        h.style.background = '<%= customColors.header_bg || "#e0e0e0" %>';
+        h.style.color = '<%= customColors.header_text || "#333333" %>';
+        h.style.borderColor = '<%= customColors.border_color || "#c3c3c3" %>';
+      });
+      // Text colors
+      cp.querySelectorAll('.vt-pt-label, .vt-pt-value, .vt-profile-box-body, .vt-activity-text, .vt-activity-empty').forEach(function(el) {
+        el.style.color = '<%= customColors.text_color || "#333333" %>';
+      });
+      cp.querySelectorAll('.vt-activity-time').forEach(function(el) {
+        el.style.color = '<%= customColors.text_color || "#333333" %>';
+        el.style.opacity = '0.7';
+      });
+      // Links
+      cp.querySelectorAll('a').forEach(function(a) {
+        if (!a.closest('.vt-header-wrap')) a.style.color = '<%= customColors.link_color || "#0033cc" %>';
+      });
+      // Videos title
+      var vt = cp.querySelector('.vt-channel-videos-title');
+      if (vt) { vt.style.color = '<%= customColors.text_color || "#333333" %>'; vt.style.borderColor = '<%= customColors.border_color || "#c3c3c3" %>'; }
+      // Table rows
+      cp.querySelectorAll('.vt-profile-table tr').forEach(function(tr) {
+        tr.style.borderColor = '<%= customColors.border_color || "#c3c3c3" %>';
+      });
+      // Video thumbnails
+      cp.querySelectorAll('.vt-video-thumb').forEach(function(thumb) {
+        thumb.style.background = '<%= customColors.box_bg || "#ffffff" %>';
+        thumb.style.border = '1px solid <%= customColors.border_color || "#c3c3c3" %>';
+        thumb.style.padding = '4px';
+        thumb.style.borderRadius = '2px';
+      });
+      cp.querySelectorAll('.vt-thumb-title').forEach(function(t) {
+        t.style.color = '<%= customColors.link_color || "#0033cc" %>';
+      });
+      cp.querySelectorAll('.vt-thumb-views').forEach(function(v) {
+        v.style.color = '<%= customColors.text_color || "#333333" %>';
+        v.style.opacity = '0.7';
+      });
+    }
+  }
+})();
+</script>
+<% } %>
+
+<%- include('partials/footer') %>

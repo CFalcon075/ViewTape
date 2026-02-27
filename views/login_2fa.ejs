@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+
+<div class="vt-form-page">
+  <h2>Two-Factor Authentication</h2>
+  <p style="font-size:13px;color:#555;margin-bottom:14px;">Welcome back, <strong><%= username %></strong>. Enter the 6-digit code from your authenticator app to continue.</p>
+  <% if (error) { %>
+    <div class="vt-error"><%= error %></div>
+  <% } %>
+  <form method="POST" action="/login/2fa" class="vt-auth-form">
+    <div class="vt-form-group">
+      <label for="totp_code">2FA Code</label>
+      <input type="text" id="totp_code" name="totp_code" placeholder="Enter 6-digit code..." maxlength="6" autocomplete="off" required autofocus style="font-size:18px;letter-spacing:4px;text-align:center;">
+    </div>
+    <button type="submit" class="vt-submit-btn">Verify &amp; Log In</button>
+  </form>
+  <p class="vt-form-footer"><a href="/login">Back to Login</a></p>
+</div>
+
+<%- include('partials/footer') %>

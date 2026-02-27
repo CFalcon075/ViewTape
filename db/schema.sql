@@ -1,0 +1,109 @@
+CREATE TABLE IF NOT EXISTS users (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  username TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  avatar TEXT DEFAULT 'pfp1.png',
+  banner TEXT DEFAULT '',
+  bio TEXT DEFAULT '',
+  snow_enabled INTEGER DEFAULT 0,
+  display_name TEXT DEFAULT '',
+  age TEXT DEFAULT '',
+  website TEXT DEFAULT '',
+  country TEXT DEFAULT '',
+  interests TEXT DEFAULT '',
+  channel_theme TEXT DEFAULT 'grey',
+  videos_watched INTEGER DEFAULT 0,
+  last_sign_in DATETIME DEFAULT CURRENT_TIMESTAMP,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS videos (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  title TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  category TEXT DEFAULT 'Entertainment',
+  tags TEXT DEFAULT '',
+  filename TEXT NOT NULL,
+  thumbnail TEXT DEFAULT '',
+  views INTEGER DEFAULT 0,
+  duration REAL DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS comments (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  video_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  text TEXT NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (video_id) REFERENCES videos(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS ratings (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  video_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  stars INTEGER DEFAULT 0,
+  thumb TEXT DEFAULT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(video_id, user_id),
+  FOREIGN KEY (video_id) REFERENCES videos(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS subscriptions (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  subscriber_id INTEGER NOT NULL,
+  channel_id INTEGER NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(subscriber_id, channel_id),
+  FOREIGN KEY (subscriber_id) REFERENCES users(id),
+  FOREIGN KEY (channel_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS playlists (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  description TEXT DEFAULT '',
+  is_quicklist INTEGER DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS playlist_items (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  playlist_id INTEGER NOT NULL,
+  video_id INTEGER NOT NULL,
+  position INTEGER DEFAULT 0,
+  added_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(playlist_id, video_id),
+  FOREIGN KEY (playlist_id) REFERENCES playlists(id) ON DELETE CASCADE,
+  FOREIGN KEY (video_id) REFERENCES videos(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS activity (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  action_type TEXT NOT NULL,
+  target_id INTEGER DEFAULT 0,
+  target_title TEXT DEFAULT '',
+  target_thumb TEXT DEFAULT '',
+  target_user TEXT DEFAULT '',
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS notifications (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id INTEGER NOT NULL,
+  type TEXT DEFAULT 'new_video',
+  message TEXT NOT NULL,
+  link TEXT DEFAULT '',
+  is_read INTEGER DEFAULT 0,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);

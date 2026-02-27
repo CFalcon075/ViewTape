@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Database (contains user data, passwords, etc.)
+db/viewtape.db
+
+# User uploads (videos, thumbnails, avatars, banners)
+uploads/videos/*
+uploads/thumbnails/*
+uploads/avatars/*
+uploads/banners/*
+
+# Keep the upload directory structure
+!uploads/videos/.gitkeep
+!uploads/thumbnails/.gitkeep
+!uploads/avatars/.gitkeep
+!uploads/banners/.gitkeep
+
+# OS files
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Environment / secrets
+.env
+
+# Test files
+_test_*.js
