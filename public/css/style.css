@@ -296,7 +296,7 @@ a:hover { text-decoration: underline; }
    ======================================== */
 .watch-layout {
   display: grid;
-  grid-template-columns: 425px 300px;
+  grid-template-columns: 640px 1fr;
   column-gap: 18px;
   row-gap: 14px;
   align-items: start;
@@ -318,6 +318,8 @@ a:hover { text-decoration: underline; }
   font-weight: bold;
   margin: 0 0 6px;
   color: #333;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
 }
 
 /* ========================================
@@ -331,7 +333,7 @@ a:hover { text-decoration: underline; }
   border: 1px solid #c3c3c3;
   background: #fff;
   margin-top: 8px;
-  width: 425px;
+  width: 100%;
 }
 
 .vt-actions-row {
@@ -433,7 +435,7 @@ a:hover { text-decoration: underline; }
    ======================================== */
 .vt-comments-section {
   margin-top: 16px;
-  width: 425px;
+  width: 100%;
 }
 
 .vt-comments-section h3 {
@@ -2318,9 +2320,29 @@ a.vt-notif-message:hover {
 /* ========================================
    RESPONSIVE
    ======================================== */
-@media (max-width: 800px) {
+
+/* --- Tablets & small desktops (≤860px) --- */
+@media (max-width: 860px) {
+  .vt-header-wrap {
+    padding: 8px 4px 0;
+  }
+  .vt-header-top {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .vt-tabs {
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+  .vt-tab {
+    width: auto;
+    flex: 1;
+    min-width: 70px;
+    font-size: 11px;
+  }
   .watch-layout {
     grid-template-columns: 1fr;
+    padding: 0 8px;
   }
   .player-container,
   .vt-actions-stats,
@@ -2333,13 +2355,175 @@ a.vt-notif-message:hover {
   .vt-channel-body {
     grid-template-columns: 1fr;
   }
+  .vt-form-page {
+    max-width: 100%;
+    margin: 20px 8px;
+  }
+  .vt-form-page.vt-upload-page {
+    max-width: 100%;
+  }
 }
 
-@media (max-width: 500px) {
+/* --- Small tablets & large phones (≤600px) --- */
+@media (max-width: 600px) {
+  .vt-page {
+    padding: 0 4px 12px;
+  }
+  .vt-header-top {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .vt-header-links {
+    font-size: 11px;
+    margin-top: 4px;
+    word-wrap: break-word;
+  }
+  .vt-logo {
+    height: 36px;
+  }
+  .vt-tagline {
+    font-size: 10px;
+  }
+  .watch-title-left {
+    font-size: 14px;
+  }
+  .vt-side-panel {
+    font-size: 11px;
+  }
+  .vt-related-thumb {
+    width: 100px;
+    height: 75px;
+  }
+  .vt-actions-row {
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-start;
+  }
+  .vt-channel-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px;
+  }
+  .vt-channel-avatar {
+    width: 48px;
+    height: 48px;
+  }
+  .vt-subs-page,
+  .vt-notifs-page,
+  .vt-playlists-page,
+  .vt-playlist-page {
+    padding: 8px 4px;
+  }
+  .vt-channels-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* --- Phones (≤480px) --- */
+@media (max-width: 480px) {
   .vt-video-grid {
     grid-template-columns: 1fr;
   }
   .vt-categories-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .vt-tabs {
+    gap: 1px;
+  }
+  .vt-tab {
+    font-size: 10px;
+    min-width: 55px;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 4px;
+  }
+  .vt-search-inner {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .vt-search-input {
+    width: 100%;
+  }
+  .vt-search-btn {
+    width: 100%;
+  }
+  .vt-searchbar {
+    padding: 6px 6px;
+  }
+  .vt-related-item {
+    gap: 6px;
+  }
+  .vt-related-thumb {
+    width: 80px;
+    height: 60px;
+  }
+  .vt-comment-avatar {
+    width: 20px;
+    height: 20px;
+  }
+  .vt-footer {
+    font-size: 10px;
+    padding: 10px 4px;
+  }
+  .vt-footer a {
+    margin: 0 3px;
+  }
+  .vt-playlist-create-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .vt-playlist-name-input,
+  .vt-playlist-desc-input {
+    width: 100%;
+  }
+  .vt-sub-channel-item {
+    gap: 8px;
+    padding: 8px 4px;
+  }
+  .vt-sub-channel-avatar {
+    width: 36px;
+    height: 36px;
+  }
+  .vt-playlist-video-item {
+    gap: 6px;
+    padding: 6px 2px;
+  }
+  .vt-playlist-video-thumb img {
+    width: 80px;
+    height: 60px;
+  }
+}
+
+/* --- Very small phones (≤360px) --- */
+@media (max-width: 360px) {
+  .vt-header-links {
+    font-size: 10px;
+  }
+  .vt-header-links a {
+    margin: 0 2px;
+  }
+  .vt-logo {
+    height: 30px;
+  }
+  .vt-tagline {
+    display: none;
+  }
+  .watch-title-left {
+    font-size: 13px;
+  }
+  .vt-side-panel {
+    padding: 6px;
+    font-size: 10px;
+  }
+  .vt-related-thumb {
+    width: 70px;
+    height: 52px;
+  }
+  .vt-related-title {
+    font-size: 10px;
+  }
+  .vt-comment-form textarea {
+    font-size: 11px;
   }
 }

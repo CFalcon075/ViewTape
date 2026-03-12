@@ -249,6 +249,74 @@ if (progressSection) {
   });
 }
 
+// Touch support for timeline
+function getTouch(e) {
+  return e.touches && e.touches.length > 0 ? e.touches[0] : (e.changedTouches && e.changedTouches.length > 0 ? e.changedTouches[0] : null);
+}
+
+function startTimelineTouchDrag(e) {
+  isDraggingTimeline = true;
+  if (progressHandle) progressHandle.classList.add('active');
+  e.preventDefault();
+}
+
+function dragTimelineTouch(e) {
+  if (!isDraggingTimeline) return;
+  e.preventDefault();
+  var touch = getTouch(e);
+  if (!touch) return;
+  var rect = progressSection.getBoundingClientRect();
+  var x = Math.max(0, Math.min(touch.clientX - rect.left, rect.width));
+  var duration = videoDuration || (myVideo ? myVideo.duration : 0) || 0;
+  var newTime = (x / rect.width) * duration;
+  var earliestPixel = (earliestWatchedTime / duration) * progressSection.clientWidth;
+  var watchedWidth = (Math.max(0, newTime - earliestWatchedTime) / duration) * progressSection.clientWidth;
+  if (progressRed) { progressRed.style.left = earliestPixel + 'px'; progressRed.style.width = watchedWidth + 'px'; }
+  var handleX = (newTime / duration) * progressSection.clientWidth;
+  if (progressHandle) progressHandle.style.left = (handleX - (progressHandle.offsetWidth / 2)) + 'px';
+  updateTimeDisplay(newTime, duration);
+}
+
+function stopTimelineTouchDrag(e) {
+  if (!isDraggingTimeline) return;
+  isDraggingTimeline = false;
+  if (progressHandle) progressHandle.classList.remove('active');
+  var touch = getTouch(e);
+  if (!touch) return;
+  var rect = progressSection.getBoundingClientRect();
+  var x = Math.max(0, Math.min(touch.clientX - rect.left, rect.width));
+  var duration = videoDuration || (myVideo ? myVideo.duration : 0) || 0;
+  var newTime = (x / rect.width) * duration;
+  earliestWatchedTime = newTime;
+  myVideo.currentTime = newTime;
+  if (progressRed) { progressRed.style.width = '0px'; progressRed.style.left = ((earliestWatchedTime / duration) * progressSection.clientWidth) + 'px'; }
+  if (progressLoaded) { progressLoaded.style.width = '0px'; progressLoaded.style.left = ((earliestWatchedTime / duration) * progressSection.clientWidth) + 'px'; }
+  updateProgress();
+  updateBuffered();
+}
+
+if (progressHandle) {
+  progressHandle.addEventListener('touchstart', startTimelineTouchDrag, { passive: false });
+}
+if (progressSection) {
+  progressSection.addEventListener('touchmove', dragTimelineTouch, { passive: false });
+  progressSection.addEventListener('touchend', stopTimelineTouchDrag, { passive: false });
+  // Tap on timeline for touch
+  progressSection.addEventListener('touchstart', function(e) {
+    var touch = getTouch(e);
+    if (!touch) return;
+    if (e.target === progressHandle) return; // handled by drag
+    var rect = progressSection.getBoundingClientRect();
+    var tapX = touch.clientX - rect.left;
+    var duration = videoDuration || (myVideo ? myVideo.duration : 0) || 0;
+    var newTime = (tapX / rect.width) * duration;
+    earliestWatchedTime = newTime;
+    myVideo.currentTime = newTime;
+    updateProgress();
+    updateBuffered();
+  }, { passive: true });
+}
+
 // Volume
 function updateVolumeIcon(volPercent) {
   if (!volumeBtn) return;
@@ -328,6 +396,35 @@ if (volumeTrack) {
     var x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
     setVolume((x / rect.width) * 100);
   });
+}
+
+// Touch support for volume
+function startVolumeTouchDrag(e) {
+  isDraggingVolume = true;
+  e.preventDefault();
+}
+
+function dragVolumeTouch(e) {
+  if (!isDraggingVolume) return;
+  e.preventDefault();
+  var touch = getTouch(e);
+  if (!touch) return;
+  var rect = volumeTrack.getBoundingClientRect();
+  var x = Math.max(0, Math.min(touch.clientX - rect.left, rect.width));
+  setVolume((x / rect.width) * 100);
+}
+
+function stopVolumeTouchDrag() {
+  if (!isDraggingVolume) return;
+  isDraggingVolume = false;
+}
+
+if (volumeHandle) {
+  volumeHandle.addEventListener('touchstart', startVolumeTouchDrag, { passive: false });
+}
+if (volumeTrack) {
+  volumeTrack.addEventListener('touchmove', dragVolumeTouch, { passive: false });
+  volumeTrack.addEventListener('touchend', stopVolumeTouchDrag, { passive: false });
 }
 
 // Fullscreen
@@ -472,6 +569,12 @@ if (typeof ResizeObserver !== 'undefined' && progressSection) {
   var observer = new ResizeObserver(function() { scheduleUIUpdate(); });
   observer.observe(progressSection);
 }
+
+// Window resize fallback (for orientation changes, etc.)
+window.addEventListener('resize', function() { scheduleUIUpdate(); });
+window.addEventListener('orientationchange', function() {
+  setTimeout(function() { scheduleUIUpdate(); }, 200);
+});
 
 // Preload UI assets
 function preloadImages(paths) {
