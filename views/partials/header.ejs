@@ -28,12 +28,12 @@
       </div>
     </div>
     <div class="vt-tabs">
-      <a href="/" class="vt-tab">Videos</a>
-      <a href="/categories" class="vt-tab">Categories</a>
-      <a href="/channels" class="vt-tab">Channels</a>
+      <a href="/" class="vt-tab <%= currentTab === 'videos' ? 'selected' : '' %>">Videos</a>
+      <a href="/categories" class="vt-tab <%= currentTab === 'categories' ? 'selected' : '' %>">Categories</a>
+      <a href="/channels" class="vt-tab <%= currentTab === 'channels' ? 'selected' : '' %>">Channels</a>
       <% if (currentUser) { %>
-        <a href="/subscriptions" class="vt-tab">Subscriptions</a>
-        <a href="/playlists" class="vt-tab">Playlists</a>
+        <a href="/subscriptions" class="vt-tab <%= currentTab === 'subscriptions' ? 'selected' : '' %>">Subscriptions</a>
+        <a href="/playlists" class="vt-tab <%= currentTab === 'playlists' ? 'selected' : '' %>">Playlists</a>
       <% } %>
     </div>
     <div class="vt-searchbar">

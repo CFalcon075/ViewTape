@@ -29,6 +29,20 @@ press_enter() {
   read -p "Press Enter to continue..."
 }
 
+is_yes() {
+  case "$1" in
+    [Yy][Ee][Ss]) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+is_purge() {
+  case "$1" in
+    [Pp][Uu][Rr][Gg][Ee]) return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
 list_channels() {
   echo ""
   echo "--- All Channels ---"
@@ -68,7 +82,7 @@ delete_channel() {
   echo ""
   echo "WARNING: This will delete user \"$DELUSER\" and ALL their videos, comments, ratings, playlists, and subscriptions."
   read -p "Are you sure? (yes/no): " CONFIRM
-  if [ "$CONFIRM" != "yes" ]; then return; fi
+  if ! is_yes "$CONFIRM"; then return; fi
   node -e "
     var m=require('./db/init');var fs=require('fs');var path=require('path');
     (async()=>{
@@ -129,7 +143,7 @@ purge_videos() {
   echo ""
   echo "WARNING: This will delete ALL videos, comments, ratings, and playlist items. Users will be kept."
   read -p "Are you sure? (yes/no): " CONFIRM
-  if [ "$CONFIRM" != "yes" ]; then return; fi
+  if ! is_yes "$CONFIRM"; then return; fi
   node -e "
     var m=require('./db/init');var fs=require('fs');var path=require('path');
     (async()=>{
@@ -155,7 +169,7 @@ purge_all() {
   echo ""
   echo "!!!! DANGER: This will delete ALL users, videos, and everything. Full database reset. !!!!"
   read -p "Type PURGE to confirm: " CONFIRM
-  if [ "$CONFIRM" != "PURGE" ]; then return; fi
+  if ! is_purge "$CONFIRM"; then return; fi
   node -e "
     var m=require('./db/init');var fs=require('fs');var path=require('path');
     (async()=>{
@@ -185,7 +199,7 @@ purge_empty() {
   echo ""
   echo "This will delete all users who have 0 videos (empty channels)."
   read -p "Are you sure? (yes/no): " CONFIRM
-  if [ "$CONFIRM" != "yes" ]; then return; fi
+  if ! is_yes "$CONFIRM"; then return; fi
   node -e "
     var m=require('./db/init');var fs=require('fs');var path=require('path');
     (async()=>{
@@ -216,7 +230,7 @@ purge_simple() {
   echo ""
   echo "This will delete ALL $LABEL."
   read -p "Are you sure? (yes/no): " CONFIRM
-  if [ "$CONFIRM" != "yes" ]; then return; fi
+  if ! is_yes "$CONFIRM"; then return; fi
   node -e "
     var m=require('./db/init');
     (async()=>{

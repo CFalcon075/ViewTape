@@ -95,7 +95,7 @@ goto MENU
 echo.
 echo !!!! DANGER: This will delete ALL users, videos, and everything. Full database reset. !!!!
 set /p CONFIRM="Type PURGE to confirm: "
-if not "%CONFIRM%"=="PURGE" goto MENU
+if /i not "%CONFIRM%"=="PURGE" goto MENU
 node -e "var m=require('./db/init');var fs=require('fs');var path=require('path');(async()=>{await m.initializeDb();var vids=m.dbAll('SELECT filename,thumbnail FROM videos');vids.forEach(function(v){try{fs.unlinkSync(path.join(__dirname,'uploads','videos',v.filename))}catch(e){}try{if(v.thumbnail)fs.unlinkSync(path.join(__dirname,'uploads','thumbnails',v.thumbnail))}catch(e){}});var avatars=m.dbAll('SELECT avatar,banner FROM users');avatars.forEach(function(u){if(u.avatar&&u.avatar!=='pfp1.png'&&u.avatar!=='pfp2.png'){try{fs.unlinkSync(path.join(__dirname,'uploads','avatars',u.avatar))}catch(e){}}if(u.banner){try{fs.unlinkSync(path.join(__dirname,'uploads','banners',u.banner))}catch(e){}}});m.dbRun('DELETE FROM playlist_items');m.dbRun('DELETE FROM playlists');m.dbRun('DELETE FROM notifications');m.dbRun('DELETE FROM subscriptions');m.dbRun('DELETE FROM comments');m.dbRun('DELETE FROM ratings');m.dbRun('DELETE FROM videos');m.dbRun('DELETE FROM users');console.log('Full purge complete. All data wiped.');process.exit(0)})()"
 echo.
 pause

@@ -1,0 +1,98 @@
+<%- include('partials/header') %>
+
+<div class="vt-response-page">
+  <div class="vt-response-header">
+    <h2>Post a Video Response</h2>
+    <p>Respond to <a href="/watch?v=<%= targetVideo.id %>"><%= targetVideo.title %></a> by <a href="/channel/<%= targetVideo.username %>"><%= targetVideo.username %></a>.</p>
+  </div>
+
+  <% if (error) { %>
+    <div class="vt-error"><%= error %></div>
+  <% } %>
+
+  <div class="vt-response-target">
+    <a href="/watch?v=<%= targetVideo.id %>" class="vt-response-target-thumb">
+      <% if (targetVideo.thumbnail) { %>
+        <img src="/uploads/thumbnails/<%= targetVideo.thumbnail %>" alt="<%= targetVideo.title %>">
+      <% } else { %>
+        <div class="vt-thumb-placeholder-sm"></div>
+      <% } %>
+    </a>
+    <div>
+      <div class="vt-response-target-title"><a href="/watch?v=<%= targetVideo.id %>"><%= targetVideo.title %></a></div>
+      <div class="vt-response-meta"><%= targetVideo.views.toLocaleString() %> views</div>
+    </div>
+  </div>
+
+  <div class="vt-response-options">
+    <div class="vt-response-box">
+      <h3>Choose One of Your Videos</h3>
+      <% if (userVideos.length > 0) { %>
+        <form method="POST" action="/video-response/choose">
+          <input type="hidden" name="parent_video_id" value="<%= targetVideo.id %>">
+          <div class="vt-response-video-list">
+            <% userVideos.forEach(function(video) { %>
+              <label class="vt-response-choice">
+                <input type="radio" name="response_video_id" value="<%= video.id %>" required>
+                <span class="vt-response-choice-thumb">
+                  <% if (video.thumbnail) { %>
+                    <img src="/uploads/thumbnails/<%= video.thumbnail %>" alt="<%= video.title %>">
+                  <% } else { %>
+                    <span class="vt-thumb-placeholder-sm"></span>
+                  <% } %>
+                </span>
+                <span class="vt-response-choice-info">
+                  <strong><%= video.title %></strong>
+                  <span><%= video.views.toLocaleString() %> views</span>
+                </span>
+              </label>
+            <% }); %>
+          </div>
+          <button type="submit" class="vt-submit-btn">Post Video Response</button>
+        </form>
+      <% } else { %>
+        <p class="vt-muted">You do not have any other videos yet. Upload a new response below.</p>
+      <% } %>
+    </div>
+
+    <div class="vt-response-box">
+      <h3>Upload a New Video Response</h3>
+      <form method="POST" action="/video-response/upload" enctype="multipart/form-data" class="vt-upload-form">
+        <input type="hidden" name="parent_video_id" value="<%= targetVideo.id %>">
+        <div class="vt-form-group">
+          <label for="title">Title <span class="required">*</span></label>
+          <input type="text" id="title" name="title" required maxlength="100" placeholder="Enter video title">
+        </div>
+        <div class="vt-form-group">
+          <label for="description">Description</label>
+          <textarea id="description" name="description" rows="4" placeholder="Describe your video response..."></textarea>
+        </div>
+        <div class="vt-form-group">
+          <label for="category">Category</label>
+          <select id="category" name="category">
+            <% categories.forEach(function(cat) { %>
+              <option value="<%= cat %>"><%= cat %></option>
+            <% }); %>
+          </select>
+        </div>
+        <div class="vt-form-group">
+          <label for="tags">Tags <span class="hint">(comma-separated)</span></label>
+          <input type="text" id="tags" name="tags" placeholder="response, vlog, funny">
+        </div>
+        <div class="vt-form-group">
+          <label for="video">Video File <span class="required">*</span></label>
+          <input type="file" id="video" name="video" accept="video/*" required>
+          <span class="hint">Max 30GB. Formats: MP4, WebM, OGG, MOV, AVI, MKV</span>
+        </div>
+        <div class="vt-form-group">
+          <label for="thumbnail">Thumbnail <span class="hint">(optional)</span></label>
+          <input type="file" id="thumbnail" name="thumbnail" accept="image/*">
+          <span class="hint">JPG, PNG, GIF, WebP. If not provided, one will be auto-generated.</span>
+        </div>
+        <button type="submit" class="vt-submit-btn">Upload and Post Response</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

@@ -5,6 +5,8 @@ const fs = require('fs');
 const { dbRun, dbGet, dbAll } = require('../db/init');
 const router = express.Router();
 
+const VIDEO_UPLOAD_MAX_BYTES = 30 * 1024 * 1024 * 1024;
+
 const CATEGORIES = [
   'Autos & Vehicles', 'Comedy', 'Education', 'Entertainment',
   'Film & Animation', 'Gaming', 'Howto & Style', 'Music',
@@ -29,7 +31,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  limits: { fileSize: 5 * 1024 * 1024 * 1024 },
+  limits: { fileSize: VIDEO_UPLOAD_MAX_BYTES },
   fileFilter: (req, file, cb) => {
     if (file.fieldname === 'video') {
       const allowed = ['.mp4', '.webm', '.ogg', '.mov', '.avi', '.mkv'];
@@ -89,6 +91,111 @@ function getVideoDuration(videoPath) {
   });
 }
 
+async function createUploadedVideo(userId, body, files) {
+  const videoFile = files.video[0];
+  let thumbnailFilename = '';
+
+  if (files.thumbnail && files.thumbnail.length > 0) {
+    thumbnailFilename = files.thumbnail[0].filename;
+  } else {
+    const thumbPath = path.join(__dirname, '..', 'uploads', 'thumbnails', videoFile.filename.replace(path.extname(videoFile.filename), '.png'));
+    const generated = await generateThumbnail(
+      path.join(__dirname, '..', 'uploads', 'videos', videoFile.filename),
+      thumbPath
+    );
+    if (generated) {
+      thumbnailFilename = path.basename(thumbPath);
+    }
+  }
+
+  const duration = await getVideoDuration(path.join(__dirname, '..', 'uploads', 'videos', videoFile.filename));
+  const result = dbRun(`
+    INSERT INTO videos (user_id, title, description, category, tags, filename, thumbnail, duration)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+  `, [
+    userId,
+    body.title.trim(),
+    (body.description || '').trim(),
+    body.category || 'Entertainment',
+    (body.tags || '').trim(),
+    videoFile.filename,
+    thumbnailFilename,
+    duration
+  ]);
+
+  return dbGet('SELECT * FROM videos WHERE id = ?', [result.lastInsertRowid]);
+}
+
+function notifySubscribers(user, video) {
+  try {
+    const subscribers = dbAll(
+      'SELECT subscriber_id FROM subscriptions WHERE channel_id = ?',
+      [user.id]
+    );
+    for (const sub of subscribers) {
+      dbRun(
+        "INSERT INTO notifications (user_id, type, message, link) VALUES (?, 'new_video', ?, ?)",
+        [sub.subscriber_id, user.username + ' uploaded: ' + video.title, '/watch?v=' + video.id]
+      );
+    }
+  } catch (e) { /* notifications table may not exist yet */ }
+}
+
+function getVideoWithUser(videoId) {
+  return dbGet(`
+    SELECT videos.*, users.username, users.avatar
+    FROM videos JOIN users ON videos.user_id = users.id
+    WHERE videos.id = ?
+  `, [videoId]);
+}
+
+function getVideoResponseFormData(userId, targetVideoId) {
+  const targetVideo = getVideoWithUser(targetVideoId);
+  if (!targetVideo) return null;
+
+  const userVideos = dbAll(`
+    SELECT videos.*
+    FROM videos
+    WHERE user_id = ? AND id != ?
+    ORDER BY created_at DESC
+  `, [userId, targetVideoId]);
+
+  return { targetVideo, userVideos };
+}
+
+function renderVideoResponsePage(res, userId, targetVideoId, error) {
+  const data = getVideoResponseFormData(userId, targetVideoId);
+  if (!data) {
+    return res.status(404).render('404', { title: 'Video Not Found' });
+  }
+  return res.render('video_response', {
+    title: 'Post a Video Response - ViewTape',
+    categories: CATEGORIES,
+    error: error || null,
+    targetVideo: data.targetVideo,
+    userVideos: data.userVideos
+  });
+}
+
+function createVideoResponse(parentVideoId, responseVideoId, userId) {
+  if (parentVideoId === responseVideoId) {
+    throw new Error('A video cannot respond to itself.');
+  }
+
+  const duplicate = dbGet(
+    'SELECT id FROM video_responses WHERE parent_video_id = ? AND response_video_id = ?',
+    [parentVideoId, responseVideoId]
+  );
+  if (duplicate) {
+    throw new Error('That video is already posted as a response.');
+  }
+
+  dbRun(`
+    INSERT INTO video_responses (parent_video_id, response_video_id, user_id)
+    VALUES (?, ?, ?)
+  `, [parentVideoId, responseVideoId, userId]);
+}
+
 // Homepage
 router.get('/', (req, res) => {
   const recentVideos = dbAll(`
@@ -119,64 +226,91 @@ router.post('/upload', requireLogin, upload.fields([
   if (!req.files || !req.files.video || req.files.video.length === 0) {
     return res.render('upload', { title: 'Upload Video - ViewTape', categories: CATEGORIES, error: 'Please select a video file.' });
   }
-  const { title, description, category, tags } = req.body;
+  const { title } = req.body;
   if (!title || title.trim().length === 0) {
     return res.render('upload', { title: 'Upload Video - ViewTape', categories: CATEGORIES, error: 'Title is required.' });
   }
 
-  const videoFile = req.files.video[0];
-  let thumbnailFilename = '';
-
-  if (req.files.thumbnail && req.files.thumbnail.length > 0) {
-    thumbnailFilename = req.files.thumbnail[0].filename;
-  } else {
-    const thumbPath = path.join(__dirname, '..', 'uploads', 'thumbnails', videoFile.filename.replace(path.extname(videoFile.filename), '.png'));
-    const generated = await generateThumbnail(
-      path.join(__dirname, '..', 'uploads', 'videos', videoFile.filename),
-      thumbPath
-    );
-    if (generated) {
-      thumbnailFilename = path.basename(thumbPath);
-    }
-  }
-
-  const duration = await getVideoDuration(path.join(__dirname, '..', 'uploads', 'videos', videoFile.filename));
-
   try {
-    dbRun(`
-      INSERT INTO videos (user_id, title, description, category, tags, filename, thumbnail, duration)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-    `, [
-      req.session.user.id,
-      title.trim(),
-      (description || '').trim(),
-      category || 'Entertainment',
-      (tags || '').trim(),
-      videoFile.filename,
-      thumbnailFilename,
-      duration
-    ]);
-    const video = dbGet('SELECT id FROM videos WHERE filename = ?', [videoFile.filename]);
-
-    // Notify all subscribers about the new upload
-    try {
-      const subscribers = dbAll(
-        'SELECT subscriber_id FROM subscriptions WHERE channel_id = ?',
-        [req.session.user.id]
-      );
-      for (const sub of subscribers) {
-        dbRun(
-          "INSERT INTO notifications (user_id, type, message, link) VALUES (?, 'new_video', ?, ?)",
-          [sub.subscriber_id, req.session.user.username + ' uploaded: ' + title.trim(), '/watch?v=' + video.id]
-        );
-      }
-    } catch (e) { /* notifications table may not exist yet */ }
-
+    const video = await createUploadedVideo(req.session.user.id, req.body, req.files);
+    notifySubscribers(req.session.user, video);
     res.redirect('/watch?v=' + video.id);
   } catch (err) {
     console.error('[ViewTape] Upload error:', err);
     res.render('upload', { title: 'Upload Video - ViewTape', categories: CATEGORIES, error: 'Upload failed. Try again.' });
   }
+});
+
+// Video response page
+router.get('/video-response', requireLogin, (req, res) => {
+  const targetVideoId = parseInt(req.query.v);
+  if (!targetVideoId) return res.redirect('/');
+  return renderVideoResponsePage(res, req.session.user.id, targetVideoId, null);
+});
+
+router.post('/video-response/choose', requireLogin, (req, res) => {
+  const parentVideoId = parseInt(req.body.parent_video_id);
+  const responseVideoId = parseInt(req.body.response_video_id);
+  if (!parentVideoId || !responseVideoId) {
+    return renderVideoResponsePage(res, req.session.user.id, parentVideoId, 'Please choose one of your videos.');
+  }
+
+  const targetVideo = getVideoWithUser(parentVideoId);
+  const responseVideo = dbGet('SELECT * FROM videos WHERE id = ? AND user_id = ?', [responseVideoId, req.session.user.id]);
+  if (!targetVideo) return res.status(404).render('404', { title: 'Video Not Found' });
+  if (!responseVideo) {
+    return renderVideoResponsePage(res, req.session.user.id, parentVideoId, 'That response video could not be found on your channel.');
+  }
+
+  try {
+    createVideoResponse(parentVideoId, responseVideoId, req.session.user.id);
+    res.redirect('/watch?v=' + parentVideoId + '#video-responses');
+  } catch (err) {
+    return renderVideoResponsePage(res, req.session.user.id, parentVideoId, err.message);
+  }
+});
+
+router.post('/video-response/upload', requireLogin, upload.fields([
+  { name: 'video', maxCount: 1 },
+  { name: 'thumbnail', maxCount: 1 }
+]), async (req, res) => {
+  const parentVideoId = parseInt(req.body.parent_video_id);
+  if (!parentVideoId) return res.redirect('/');
+  if (!req.files || !req.files.video || req.files.video.length === 0) {
+    return renderVideoResponsePage(res, req.session.user.id, parentVideoId, 'Please select a video file.');
+  }
+
+  const { title } = req.body;
+  if (!title || title.trim().length === 0) {
+    return renderVideoResponsePage(res, req.session.user.id, parentVideoId, 'Title is required.');
+  }
+
+  const targetVideo = getVideoWithUser(parentVideoId);
+  if (!targetVideo) return res.status(404).render('404', { title: 'Video Not Found' });
+
+  try {
+    const video = await createUploadedVideo(req.session.user.id, req.body, req.files);
+    createVideoResponse(parentVideoId, video.id, req.session.user.id);
+    notifySubscribers(req.session.user, video);
+    res.redirect('/watch?v=' + parentVideoId + '#video-responses');
+  } catch (err) {
+    console.error('[ViewTape] Video response upload error:', err);
+    return renderVideoResponsePage(res, req.session.user.id, parentVideoId, 'Video response upload failed. Try again.');
+  }
+});
+
+// Embeddable player
+router.get('/embed/:id', (req, res) => {
+  const videoId = parseInt(req.params.id);
+  if (!videoId) return res.status(404).send('Video not found');
+
+  const video = getVideoWithUser(videoId);
+  if (!video) return res.status(404).send('Video not found');
+
+  res.render('embed', {
+    title: video.title + ' - ViewTape Embed',
+    video
+  });
 });
 
 // Watch page
@@ -245,6 +379,22 @@ router.get('/watch', (req, res) => {
     `, [10 - relatedVideos.length]);
   }
 
+  const videoResponses = dbAll(`
+    SELECT video_responses.created_at as response_created_at, videos.*, users.username, users.avatar
+    FROM video_responses
+    JOIN videos ON video_responses.response_video_id = videos.id
+    JOIN users ON videos.user_id = users.id
+    WHERE video_responses.parent_video_id = ?
+    ORDER BY video_responses.created_at DESC
+  `, [videoId]);
+
+  const moreFromChannel = dbAll(`
+    SELECT videos.*, users.username, users.avatar
+    FROM videos JOIN users ON videos.user_id = users.id
+    WHERE videos.id != ? AND videos.user_id = ?
+    ORDER BY videos.created_at DESC LIMIT 30
+  `, [videoId, video.user_id]);
+
   // Subscription data for watch page
   let isSubscribed = false;
   let subscriberCount = 0;
@@ -266,6 +416,11 @@ router.get('/watch', (req, res) => {
     } catch (e) { /* table may not exist yet */ }
   }
 
+  const origin = req.protocol + '://' + req.get('host');
+  const shareUrl = origin + '/watch?v=' + videoId;
+  const embedUrl = origin + '/embed/' + videoId;
+  const embedCode = '<iframe width="425" height="344" src="' + embedUrl + '" frameborder="0" allowfullscreen></iframe>';
+
   res.render('watch', {
     title: video.title + ' - ViewTape',
     video: { ...video, views: alreadyViewed ? video.views : video.views + 1 },
@@ -273,9 +428,13 @@ router.get('/watch', (req, res) => {
     ratingStats: ratingStats || { avg_rating: 0, rating_count: 0, thumbs_up: 0, thumbs_down: 0 },
     userRating,
     relatedVideos: [...relatedVideos, ...moreRelated],
+    videoResponses,
+    moreFromChannel,
     isSubscribed,
     subscriberCount,
-    userPlaylists
+    userPlaylists,
+    shareUrl,
+    embedCode
   });
 });
 
@@ -405,5 +564,8 @@ router.post('/delete-video', requireLogin, (req, res) => {
   dbRun('DELETE FROM videos WHERE id = ?', [parseInt(video_id)]);
   res.redirect('/channel/' + req.session.user.username);
 });
+
+router.CATEGORIES = CATEGORIES;
+router.VIDEO_UPLOAD_MAX_BYTES = VIDEO_UPLOAD_MAX_BYTES;
 
 module.exports = router;

@@ -8,6 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
 const SESSION_SECRET = process.env.SESSION_SECRET || 'viewtape-secret-change-me';
+const videoRoutes = require('./routes/videos');
 
 // Ensure upload directories exist
 const uploadDirs = [
@@ -40,6 +41,16 @@ app.use(session({
 app.use((req, res, next) => {
   res.locals.currentUser = req.session.user || null;
   res.locals.unreadNotifications = 0;
+  res.locals.currentTab = 'videos';
+  if (req.path.startsWith('/categories') || req.path.startsWith('/category')) {
+    res.locals.currentTab = 'categories';
+  } else if (req.path.startsWith('/channels') || req.path.startsWith('/channel')) {
+    res.locals.currentTab = 'channels';
+  } else if (req.path.startsWith('/subscriptions')) {
+    res.locals.currentTab = 'subscriptions';
+  } else if (req.path.startsWith('/playlists') || req.path.startsWith('/playlist')) {
+    res.locals.currentTab = 'playlists';
+  }
   if (req.session.user) {
     try {
       const result = dbGet(
@@ -74,7 +85,6 @@ if (gateRoutes.isGateEnabled()) {
 
 // Routes
 const authRoutes = require('./routes/auth');
-const videoRoutes = require('./routes/videos');
 const commentRoutes = require('./routes/comments');
 const ratingRoutes = require('./routes/ratings');
 const channelRoutes = require('./routes/channel');
@@ -100,8 +110,8 @@ app.use((err, req, res, next) => {
   if (err.code === 'LIMIT_FILE_SIZE') {
     return res.status(413).render('upload', {
       title: 'Upload Video - ViewTape',
-      categories: require('./routes/videos').CATEGORIES || [],
-      error: 'File too large. Maximum size is 5GB.'
+      categories: videoRoutes.CATEGORIES || [],
+      error: 'File too large. Maximum size is 30GB.'
     });
   }
   res.status(500).send('Something went wrong. Please try again.');

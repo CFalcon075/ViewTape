@@ -172,6 +172,41 @@
       <% } %>
     </div>
 
+    <!-- Video Responses -->
+    <div class="vt-video-responses" id="video-responses">
+      <div class="vt-section-head">
+        <h3>Video Responses (<%= videoResponses.length %>)</h3>
+        <% if (currentUser) { %>
+          <a href="/video-response?v=<%= video.id %>" class="vt-post-response-link">Post a Video Response</a>
+        <% } else { %>
+          <a href="/login" class="vt-post-response-link">Log in to post a video response</a>
+        <% } %>
+      </div>
+      <% if (videoResponses.length > 0) { %>
+        <div class="vt-video-response-list">
+          <% videoResponses.forEach(function(response) { %>
+            <div class="vt-video-response-item">
+              <a href="/watch?v=<%= response.id %>" class="vt-video-response-thumb">
+                <% if (response.thumbnail) { %>
+                  <img src="/uploads/thumbnails/<%= response.thumbnail %>" alt="<%= response.title %>">
+                <% } else { %>
+                  <span class="vt-thumb-placeholder-sm"></span>
+                <% } %>
+              </a>
+              <div class="vt-video-response-info">
+                <a href="/watch?v=<%= response.id %>" class="vt-video-response-title"><%= response.title %></a>
+                <span>by <a href="/channel/<%= response.username %>"><%= response.username %></a></span>
+                <span><%= response.views.toLocaleString() %> views</span>
+                <span>Posted <%= new Date(response.response_created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+              </div>
+            </div>
+          <% }); %>
+        </div>
+      <% } else { %>
+        <p class="vt-empty-response">No video responses yet. Be the first to respond with a video!</p>
+      <% } %>
+    </div>
+
     <!-- Comments Section -->
     <div class="vt-comments-section">
       <h3>Comments (<%= comments.length %>)</h3>
@@ -248,6 +283,16 @@
           </span>
         </div>
       <% } %>
+      <div class="vt-share-embed-box">
+        <div class="vt-share-row">
+          <label for="shareUrl">URL</label>
+          <input id="shareUrl" type="text" readonly value="<%= shareUrl %>" onclick="this.select()">
+        </div>
+        <div class="vt-share-row">
+          <label for="embedCode">Embed</label>
+          <input id="embedCode" type="text" readonly value="<%= embedCode %>" onclick="this.select()">
+        </div>
+      </div>
       <% if (currentUser && currentUser.id === video.user_id) { %>
         <form method="POST" action="/delete-video" class="vt-delete-form">
           <input type="hidden" name="video_id" value="<%= video.id %>">
@@ -255,6 +300,28 @@
         </form>
       <% } %>
     </div>
+
+    <% if (moreFromChannel.length > 0) { %>
+      <div class="vt-related vt-more-from-channel">
+        <h3>More From <%= video.username %></h3>
+        <% moreFromChannel.forEach(function(rv) { %>
+          <div class="vt-related-item">
+            <a href="/watch?v=<%= rv.id %>" class="vt-related-thumb">
+              <% if (rv.thumbnail) { %>
+                <img src="/uploads/thumbnails/<%= rv.thumbnail %>" alt="<%= rv.title %>">
+              <% } else { %>
+                <div class="vt-thumb-placeholder-sm"></div>
+              <% } %>
+            </a>
+            <div class="vt-related-info">
+              <a href="/watch?v=<%= rv.id %>" class="vt-related-title"><%= rv.title %></a>
+              <span class="vt-related-meta"><%= rv.views.toLocaleString() %> views</span>
+              <span class="vt-related-meta"><%= new Date(rv.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) %></span>
+            </div>
+          </div>
+        <% }); %>
+      </div>
+    <% } %>
 
     <% if (relatedVideos.length > 0) { %>
       <div class="vt-related">

@@ -42,6 +42,18 @@ CREATE TABLE IF NOT EXISTS comments (
   FOREIGN KEY (user_id) REFERENCES users(id)
 );
 
+CREATE TABLE IF NOT EXISTS video_responses (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  parent_video_id INTEGER NOT NULL,
+  response_video_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(parent_video_id, response_video_id),
+  FOREIGN KEY (parent_video_id) REFERENCES videos(id) ON DELETE CASCADE,
+  FOREIGN KEY (response_video_id) REFERENCES videos(id) ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
 CREATE TABLE IF NOT EXISTS ratings (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   video_id INTEGER NOT NULL,
