@@ -16,6 +16,28 @@ fi
 echo "[ViewTape] Node.js found: $(node --version)"
 echo ""
 
+# Check for FFmpeg (optional, used for auto-thumbnails and video duration)
+echo "[ViewTape] Checking FFmpeg setup..."
+if FFMPEG_PATH=$(command -v ffmpeg 2>/dev/null); then
+    FFMPEG_VERSION_OUTPUT=$(ffmpeg -version 2>&1)
+    FFMPEG_STATUS=$?
+    if [ $FFMPEG_STATUS -eq 0 ]; then
+        FFMPEG_VERSION_LINE=${FFMPEG_VERSION_OUTPUT%%$'\n'*}
+        echo "[ViewTape] FFmpeg found: $FFMPEG_VERSION_LINE"
+        echo "[ViewTape] FFmpeg path: $FFMPEG_PATH"
+    else
+        echo "[WARN] FFmpeg was found at $FFMPEG_PATH, but it could not run."
+        echo "[WARN] ffmpeg -version returned exit code $FFMPEG_STATUS:"
+        echo "$FFMPEG_VERSION_OUTPUT"
+        echo "[WARN] Auto-thumbnails and video duration detection may not work."
+    fi
+else
+    echo "[WARN] FFmpeg is not installed or not in PATH."
+    echo "[WARN] Auto-thumbnails and video duration detection will be skipped."
+    echo "[WARN] Install FFmpeg, then run 'ffmpeg -version' to confirm it works."
+fi
+echo ""
+
 # Install dependencies if needed
 if [ ! -d "node_modules" ]; then
     echo "[ViewTape] Installing dependencies..."
