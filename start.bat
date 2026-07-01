@@ -23,6 +23,33 @@ echo [ViewTape] Node.js found:
 node --version
 echo.
 
+:: Check for FFmpeg (optional, used for auto-thumbnails and video duration)
+echo [ViewTape] Checking FFmpeg setup...
+where ffmpeg >nul 2>nul
+if errorlevel 1 (
+    echo [WARN] FFmpeg is not installed or not in PATH.
+    echo [WARN] Auto-thumbnails and video duration detection will be skipped.
+    echo [WARN] Install FFmpeg, then run "ffmpeg -version" to confirm it works.
+) else (
+    set "VT_FFMPEG_PATH="
+    for /f "delims=" %%p in ('where ffmpeg') do if not defined VT_FFMPEG_PATH set "VT_FFMPEG_PATH=%%p"
+    set "VT_FFMPEG_OUTPUT=%TEMP%\viewtape_ffmpeg_version_%RANDOM%.txt"
+    ffmpeg -version > "!VT_FFMPEG_OUTPUT!" 2>&1
+    if errorlevel 1 (
+        echo [WARN] FFmpeg was found at !VT_FFMPEG_PATH!, but it could not run.
+        echo [WARN] ffmpeg -version output:
+        type "!VT_FFMPEG_OUTPUT!"
+        echo [WARN] Auto-thumbnails and video duration detection may not work.
+    ) else (
+        set "VT_FFMPEG_VERSION="
+        for /f "usebackq delims=" %%f in ("!VT_FFMPEG_OUTPUT!") do if not defined VT_FFMPEG_VERSION set "VT_FFMPEG_VERSION=%%f"
+        echo [ViewTape] FFmpeg found: !VT_FFMPEG_VERSION!
+        echo [ViewTape] FFmpeg path: !VT_FFMPEG_PATH!
+    )
+    del /q "!VT_FFMPEG_OUTPUT!" >nul 2>nul
+)
+echo.
+
 :: Install dependencies if needed
 if not exist "node_modules" (
     echo [ViewTape] Installing dependencies...
