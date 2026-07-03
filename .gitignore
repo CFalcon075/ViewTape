@@ -26,3 +26,7 @@ Desktop.ini
 
 # Test files
 _test_*.js
+
+# Cursor continual learning (local agent memory, not for the repo)
+AGENTS.md
+.cursor/hooks/state/
